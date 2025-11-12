@@ -5,6 +5,7 @@ import numpy as np
 import torch.nn.functional as F
 import torch.optim as optim
 from models.gcn import GCN, embedding_GCN
+from models.graphsage import graphsage, embedding_graphsage
 from models.gat import GAT, embedding_gat
 from topology_attack import PGDAttack
 from utils import *
@@ -184,8 +185,8 @@ if device.type == 'cuda':
 
 ##### MOLHIV LOADER ######
 data = MolHIVArchiveDataset(
-    archive_zip="archive.zip",
-    extract_dir="archive_extracted",
+    archive_zip="../Graph_Model_Inversion_Attack/archive.zip",
+    extract_dir="../Graph_Model_Inversion_Attack/archive_extracted",
     require_mask=True,
     seed=22,
     max_graphs_per_split=(10, 10, 10),  # per-split caps
@@ -233,20 +234,109 @@ init_adj = torch.zeros_like(adj).to(torch.float32).cpu()  # same shape as adj; s
 # ------------------------- Victim model (binary classification) -------------------------
 
 # For one-vs-rest on a single PPI label: nclass = 2
+# nfeat = features.shape[1]
+# nclass = 2
+
+# victim_model = GCN(nfeat=nfeat, nclass=nclass, nhid=args.hidden,
+#                    dropout=args.dropout, weight_decay=args.weight_decay, device=device)
+# victim_model = victim_model.to(device)
+
+# # Fit on official train/val split (CrossEntropy, expecting labels in {0,1})
+# victim_model.fit(features, adj, labels, idx_train, idx_val, train_iters = 200)
+
+# # Build embedding model and load overlapping parameters
+# embedding = embedding_GCN(nfeat=nfeat, nhid=args.hidden, device=device)
+# embedding.load_state_dict(transfer_state_dict(victim_model.state_dict(), embedding.state_dict()))
+# embedding = embedding.to(device)
+
+# # ------------------------- Victim model (GAT, binary classification) -------------------------
+
+# # For one-vs-rest on a single PPI label: nclass = 2
+# nfeat = features.shape[1]
+# nclass = 2
+
+# # Instantiate GAT victim model
+# victim_model = GAT(
+#     nfeat=nfeat,
+#     nhid=args.hidden,
+#     nclass=nclass,
+#     dropout=args.dropout,
+#     alpha=0.2,      # e.g. 0.2 if not in args
+#     nheads=8,    # e.g. 8   if not in args
+#     device=device
+# ).to(device)
+
+# # Fit on official train/val split (NLLLoss, expecting labels in {0,1})
+# victim_model.fit(
+#     features,
+#     adj,
+#     labels,
+#     idx_train,
+#     idx_val,
+#     train_iters=20
+# )
+
+# # ------------------------- GAT embedding model -------------------------
+
+# embedding = embedding_gat(
+#     nfeat=nfeat,
+#     nhid=args.hidden,
+#     nclass=nclass,
+#     dropout=args.dropout,
+#     alpha=0.2,      # same as above
+#     nheads=8,    # same as above
+#     device=device
+# )
+
+# # Transfer overlapping parameters from trained GAT victim to embedding GAT
+# embedding.load_state_dict(
+#     transfer_state_dict(victim_model.state_dict(), embedding.state_dict())
+# )
+# embedding = embedding.to(device)
+
+# ------------------------- Victim model (GraphSAGE, binary classification) -------------------------
+
 nfeat = features.shape[1]
 nclass = 2
 
-victim_model = GCN(nfeat=nfeat, nclass=nclass, nhid=args.hidden,
-                   dropout=args.dropout, weight_decay=args.weight_decay, device=device)
-victim_model = victim_model.to(device)
+victim_model = graphsage(
+    nfeat=nfeat,
+    nhid=args.hidden,
+    nclass=nclass,
+    dropout=args.dropout,
+    lr=getattr(args, "lr", 0.01),         # fallback to 0.01 if args.lr not defined
+    weight_decay=args.weight_decay,
+    with_relu=True,
+    with_bias=False,
+    device=device
+).to(device)
 
-# Fit on official train/val split (CrossEntropy, expecting labels in {0,1})
-victim_model.fit(features, adj, labels, idx_train, idx_val, train_iters = 200)
+victim_model.fit(
+    features,
+    adj,
+    labels,
+    idx_train,
+    idx_val,          # can be None if you don't have a val split
+    train_iters=200,  # or whatever you want
+    initialize=True,
+    verbose=True,
+    normalize=True,
+    patience=100
+)
+# ------------------------- GraphSAGE embedding model -------------------------
 
-# Build embedding model and load overlapping parameters
-embedding = embedding_GCN(nfeat=nfeat, nhid=args.hidden, device=device)
-embedding.load_state_dict(transfer_state_dict(victim_model.state_dict(), embedding.state_dict()))
-embedding = embedding.to(device)
+embedding = embedding_graphsage(
+    nfeat=nfeat,
+    nhid=args.hidden,
+    with_bias=False,
+    device=device
+)
+
+# Transfer overlapping parameters from trained GraphSAGE victim model
+embedding.load_state_dict(
+    transfer_state_dict(victim_model.state_dict(), embedding.state_dict())
+)
+sage_embedding = embedding.to(device)
 
 # ------------------------- Attack model -------------------------
 
@@ -257,7 +347,7 @@ def main():
     # Run the attack to infer links among targeted nodes
     print('Beginning attack...')
     num_edges = max(2000, int(0.005 * len(idx_attack)**2))
-    attack.attack(features, init_adj, labels, idx_attack, num_edges, epochs=200)#args.epochs)
+    attack.attack(features, init_adj, labels, idx_attack,A num_edges, epochs=200)#args.epochs)
     inference_adj = attack.modified_adj.cpu()
 
     print('=== testing GCN on original (clean) graph ===')
