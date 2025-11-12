@@ -1,4 +1,4 @@
-# GNN_Privary_for_Biomedical_Data
+# GNN_Privacy_for_Biomedical_Data
 
 ## LINKTELLER
 
