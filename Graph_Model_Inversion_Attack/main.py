@@ -194,17 +194,6 @@ data = MolHIVArchiveDataset(
     graphs_select_mode="random",            # or "head"
 )
 
-# # OR B) Work on ONE full molecule graph (picked by graph-level split + index)
-# data = MolHIVArchiveDataset(
-#     archive_zip="archive.zip",
-#     extract_dir="archive_extracted",
-#     require_mask=True,
-#     #seed=42,
-#     single_graph=("train", 0),
-#     local_split_if_single="10_10_80",  # uncomment to create node 10/10/80 inside that molecule
-# )
-
-
 print(data)
 adj = data.adj            # csr (N, N)
 features = data.features  # csr (N, 50)
@@ -347,7 +336,7 @@ def main():
     # Run the attack to infer links among targeted nodes
     print('Beginning attack...')
     num_edges = max(2000, int(0.005 * len(idx_attack)**2))
-    attack.attack(features, init_adj, labels, idx_attack,A num_edges, epochs=200)#args.epochs)
+    attack.attack(features, init_adj, labels, idx_attack, num_edges, epochs=200)#args.epochs)
     inference_adj = attack.modified_adj.cpu()
 
     print('=== testing GCN on original (clean) graph ===')

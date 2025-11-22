@@ -13,7 +13,11 @@ from models.gcn import GCN, embedding_GCN
 from models.graphsage import graphsage, embedding_graphsage
 from models.gat import GAT, embedding_gat
 from topology_attack import PGDAttack
+
 from molhiv_dataset_compat import MolHIVArchiveDataset
+from proteins_dataset_compat import ProteinsArchiveDataset
+from mutag_dataset_compat import MutagArchiveDataset
+
 from utils import (
     to_tensor,
     normalize_adj_tensor,
@@ -53,12 +57,12 @@ def _to_numpy_dense(x):
 
 def metric(ori_adj, inference_adj, idx):
     """
-    ROC-AUC & AP for link inference on a node subset:
+    ROC-AUC, AP, and best-F1 for link inference on a node subset:
     - Binarize ground-truth adj to {0,1}.
     - Use upper triangle (no diagonal).
     - Balance negatives to #positives.
     """
-    from sklearn.metrics import roc_curve, auc, average_precision_score
+    from sklearn.metrics import roc_curve, auc, average_precision_score, precision_recall_curve
 
     A = _to_numpy_dense(ori_adj)
     S = _to_numpy_dense(inference_adj)
@@ -80,8 +84,8 @@ def metric(ori_adj, inference_adj, idx):
     neg_idx = np.where(y_true == 0)[0]
 
     if len(pos_idx) == 0:
-        print("No positive edges in the selected subset; cannot compute ROC/AP.")
-        return float("nan"), float("nan")
+        print("No positive edges in the selected subset; cannot compute ROC/AP/F1.")
+        return float("nan"), float("nan"), float("nan")
 
     if len(neg_idx) > len(pos_idx):
         rng = np.random.default_rng(0)
@@ -91,12 +95,21 @@ def metric(ori_adj, inference_adj, idx):
     y_true_b = y_true[keep]
     y_score_b = y_score[keep]
 
+    # ROC-AUC + AP
     fpr, tpr, _ = roc_curve(y_true_b, y_score_b)
     roc = auc(fpr, tpr)
     ap = average_precision_score(y_true_b, y_score_b)
 
-    print(f"Inference attack AUC: {roc:.4f}  AP: {ap:.4f}")
-    return float(roc), float(ap)
+    # Best F1 over thresholds via precision-recall curve
+    precisions, recalls, thresholds = precision_recall_curve(y_true_b, y_score_b)
+    # last point in PR curve corresponds to threshold -> +inf, skip for F1
+    precisions = precisions[:-1]
+    recalls = recalls[:-1]
+    f1_scores = 2 * precisions * recalls / (precisions + recalls + 1e-12)
+    best_f1 = float(np.nanmax(f1_scores)) if f1_scores.size > 0 else float("nan")
+
+    print(f"Inference attack AUC: {roc:.4f}  AP: {ap:.4f}  best-F1: {best_f1:.4f}")
+    return float(roc), float(ap), best_f1
 
 
 def evaluate_victim(adj, features, labels, idx_test, victim_model, device):
@@ -198,6 +211,7 @@ def build_victim_and_embedding(arch, nfeat, nclass, args, device):
 
 
 def run_single_experiment(
+    dataset_name,
     arch,
     run_id,
     adj,
@@ -212,15 +226,16 @@ def run_single_experiment(
     device,
 ):
     """Train victim, run attack, return metrics for a single run of one architecture."""
-    # fresh seeds per run
-    seed = args.seed + run_id
+    # seed that depends on dataset + arch + run
+    base = hash(dataset_name + arch) % (10**6)
+    seed = args.seed + run_id + base
     np.random.seed(seed)
     random.seed(seed)
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed(seed)
 
-    print(f"\n=== Architecture: {arch} | Run: {run_id} | Seed: {seed} ===")
+    print(f"\n=== Dataset: {dataset_name} | Arch: {arch} | Run: {run_id} | Seed: {seed} ===")
 
     nfeat = features.shape[1]
     nclass = 2
@@ -237,7 +252,7 @@ def run_single_experiment(
             labels,
             idx_train,
             idx_val,
-            train_iters=200,
+            train_iters=50,
             initialize=True,
             verbose=True,
             normalize=True,
@@ -250,7 +265,7 @@ def run_single_experiment(
             labels,
             idx_train,
             idx_val,
-            train_iters=200,
+            train_iters=50,
         )
 
     # test victim
@@ -279,9 +294,10 @@ def run_single_experiment(
     )
     inference_adj = attack.modified_adj.cpu()
 
-    attack_auc, attack_ap = metric(adj, inference_adj, idx_attack)
+    attack_auc, attack_ap, attack_f1 = metric(adj, inference_adj, idx_attack)
 
     return {
+        "dataset": dataset_name,
         "arch": arch,
         "run": run_id,
         "seed": seed,
@@ -289,7 +305,49 @@ def run_single_experiment(
         "test_acc": test_acc,
         "attack_auc": attack_auc,
         "attack_ap": attack_ap,
+        "attack_f1": attack_f1,
     }
+
+
+# ------------------------- Dataset loader -------------------------
+
+
+def load_dataset(dataset_name: str):
+    """
+    Small factory to load MolHIV / PROTEINS / MUTAG in a unified way.
+    For PROTEINS/MUTAG we use torch_geometric.TUDataset under the hood via
+    ProteinsArchiveDataset / MutagArchiveDataset, but expose the same
+    fields as MolHIVArchiveDataset.
+    """
+    dataset_name = dataset_name.lower()
+    if dataset_name == "molhiv":
+        return MolHIVArchiveDataset(
+            archive_zip="../Graph_Model_Inversion_Attack/archive.zip",
+            extract_dir="../Graph_Model_Inversion_Attack/archive_extracted",
+            require_mask=True,
+            seed=22,
+            max_graphs_per_split=(10, 10, 10),
+            max_graphs_total=1600,
+            graphs_select_mode="random",
+        )
+    elif dataset_name == "proteins":
+        return ProteinsArchiveDataset(
+            require_mask=True,
+            seed=22,
+            max_graphs_per_split=(10, 10, 10),
+            max_graphs_total=1600,
+            graphs_select_mode="random",
+        )
+    elif dataset_name == "mutag":
+        return MutagArchiveDataset(
+            require_mask=True,
+            seed=22,
+            max_graphs_per_split=(10, 10, 10),
+            max_graphs_total=1600,
+            graphs_select_mode="random",
+        )
+    else:
+        raise ValueError(f"Unknown dataset: {dataset_name}")
 
 
 # ------------------------- Main experiment loop -------------------------
@@ -324,6 +382,12 @@ def main():
         help="Comma-separated list of architectures: gcn,gat,graphsage",
     )
     parser.add_argument(
+        "--datasets",
+        type=str,
+        default="proteins,mutag,molhiv",
+        help="Comma-separated list of datasets: molhiv,proteins,mutag",
+    )
+    parser.add_argument(
         "--outdir",
         type=str,
         default=".",
@@ -339,70 +403,74 @@ def main():
     if device.type == "cuda":
         torch.cuda.manual_seed(args.seed)
 
-    # --------- load data (MolHIV) ---------
-    data = MolHIVArchiveDataset(
-        archive_zip="../Graph_Model_Inversion_Attack/archive.zip",
-        extract_dir="../Graph_Model_Inversion_Attack/archive_extracted",
-        require_mask=True,
-        seed=22,
-        max_graphs_per_split=(10, 10, 10),
-        max_graphs_total=1600,
-        graphs_select_mode="random",
-    )
-
-    print(data)
-    adj = data.adj            # csr (N, N)
-    features = data.features  # csr (N, F)
-    labels = data.labels      # (N,) int {0,1}
-    idx_train, idx_val, idx_test = data.idx_train, data.idx_val, data.idx_test
-
-    # choose subset of nodes to attack
-    idx_attack = np.array(
-        random.sample(range(adj.shape[0]),
-                      int(adj.shape[0] * args.nlabel))
-    )
-
-    # convert to torch tensors (no adj normalization here; that happens inside models)
-    adj, features, labels_t = preprocess(
-        adj,
-        features,
-        labels,
-        preprocess_adj=False,
-        onehot_feature=False,
-    )
-
-    # initial (fake) adjacency for attack
-    init_adj = torch.zeros_like(adj).to(torch.float32).cpu()
-
-    arch_list = [a.strip() for a in args.archs.split(",") if a.strip()]
+    arch_list = [a.strip().lower() for a in args.archs.split(",") if a.strip()]
+    dataset_list = [d.strip().lower() for d in args.datasets.split(",") if d.strip()]
 
     results = []
-    for arch in arch_list:
-        for run_id in range(args.runs):
-            res = run_single_experiment(
-                arch=arch,
-                run_id=run_id,
-                adj=adj,
-                features=features,
-                labels=labels_t,
-                idx_train=idx_train,
-                idx_val=idx_val,
-                idx_test=idx_test,
-                idx_attack=idx_attack,
-                init_adj=init_adj,
-                args=args,
-                device=device,
+
+    for dataset_name in dataset_list:
+        print("\n#############################")
+        print(f"### Loading dataset: {dataset_name}")
+        print("#############################")
+
+        # --------- load data ---------
+        data = load_dataset(dataset_name)
+        print(data)
+
+        adj = data.adj            # csr (N, N)
+        features = data.features  # csr (N, F)
+        labels = data.labels      # (N,) int {0,1}
+        idx_train, idx_val, idx_test = data.idx_train, data.idx_val, data.idx_test
+
+        # choose subset of nodes to attack
+        idx_attack = np.array(
+            random.sample(
+                range(adj.shape[0]),
+                int(adj.shape[0] * args.nlabel),
             )
-            results.append(res)
+        )
+
+        # convert to torch tensors (no adj normalization here; that happens inside models)
+        adj_t, features_t, labels_t = preprocess(
+            adj,
+            features,
+            labels,
+            preprocess_adj=False,
+            onehot_feature=False,
+        )
+
+        # initial (fake) adjacency for attack
+        init_adj = torch.zeros_like(adj_t).to(torch.float32).cpu()
+
+        # run experiments for each architecture
+        for arch in arch_list:
+            for run_id in range(args.runs):
+                res = run_single_experiment(
+                    dataset_name=dataset_name,
+                    arch=arch,
+                    run_id=run_id,
+                    adj=adj_t,
+                    features=features_t,
+                    labels=labels_t,
+                    idx_train=idx_train,
+                    idx_val=idx_val,
+                    idx_test=idx_test,
+                    idx_attack=idx_attack,
+                    init_adj=init_adj,
+                    args=args,
+                    device=device,
+                )
+                results.append(res)
 
     df = pd.DataFrame(results)
-    print("\n=== All runs ===")
+    print("\n=== All runs (all datasets) ===")
     print(df)
 
-    summary = df.groupby("arch")[["test_acc", "attack_auc", "attack_ap"]].agg(
-        ["mean", "std"]
+    summary = (
+        df.groupby(["dataset", "arch"])[["test_acc", "attack_auc", "attack_ap", "attack_f1"]]
+        .agg(["mean", "std"])
     )
-    print("\n=== Summary by architecture (mean ± std) ===")
+    print("\n=== Summary by (dataset, architecture) (mean ± std) ===")
     print(summary)
 
     os.makedirs(args.outdir, exist_ok=True)

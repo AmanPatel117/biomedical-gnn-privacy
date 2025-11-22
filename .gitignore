@@ -1,3 +1,4 @@
 # Ignore ipynb and python temporary files
 .ipynb_checkpoints/
 __pycache__/
+datasets/
