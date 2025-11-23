@@ -1,4 +1,10 @@
 # Ignore ipynb and python temporary files
 .ipynb_checkpoints/
 __pycache__/
+
+# Ignore data
 datasets/
+
+
+# Ignore pytorch models
+mia-models/
