@@ -1,0 +1,1087 @@
+---------------------------------------
+Begin Slurm Prolog: Nov-25-2025 02:43:16
+Job ID:    3648958
+User ID:   khom9
+Account:   cse
+Job name:  Run_Main_NoDefense
+Partition: coe-gpu
+QOS:       coe-ice
+---------------------------------------
+Tue Nov 25 02:43:16 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 575.57.08              Driver Version: 575.57.08      CUDA Version: 12.9     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:C7:00.0 Off |                    0 |
+| N/A   42C    P0             89W /  700W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+----------------ITERATION 1/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9571, F1: 0.9684, AUROC: 1.0000
+Target model (test): acc: 0.7500, F1: 0.8333, AUROC: 0.8739
+Shadow model (train): acc: 0.9571, F1: 0.9655, AUROC: 0.9938
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.7899
+Shadow (train) AUROC: 0.85625
+Target (test) AUROC: 0.5732142857142858
+Run #2
+Target model (train): acc: 1.0000, F1: 1.0000, AUROC: 1.0000
+Target model (test): acc: 0.8333, F1: 0.8750, AUROC: 0.9076
+Shadow model (train): acc: 0.9571, F1: 0.9677, AUROC: 0.9964
+Shadow model (test): acc: 0.6667, F1: 0.7895, AUROC: 0.6471
+Shadow (train) AUROC: 0.8934523809523811
+Target (test) AUROC: 0.5785714285714286
+Run #3
+Target model (train): acc: 0.6857, F1: 0.6857, AUROC: 0.9918
+Target model (test): acc: 0.5833, F1: 0.5833, AUROC: 0.9160
+Shadow model (train): acc: 0.8571, F1: 0.8750, AUROC: 0.9538
+Shadow model (test): acc: 0.3750, F1: 0.5161, AUROC: 0.2605
+Shadow (train) AUROC: 0.8642857142857143
+Target (test) AUROC: 0.5785714285714285
+Run #4
+Target model (train): acc: 0.9714, F1: 0.9787, AUROC: 0.9991
+Target model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.8571
+Shadow model (train): acc: 0.9571, F1: 0.9663, AUROC: 0.9929
+Shadow model (test): acc: 0.7083, F1: 0.8205, AUROC: 0.5210
+Shadow (train) AUROC: 0.9020833333333333
+Target (test) AUROC: 0.5416666666666667
+Run #5
+Target model (train): acc: 0.9571, F1: 0.9677, AUROC: 0.9946
+Target model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.7647
+Shadow model (train): acc: 0.8714, F1: 0.9091, AUROC: 0.9867
+Shadow model (test): acc: 0.6667, F1: 0.8000, AUROC: 0.5546
+Shadow (train) AUROC: 0.7892857142857144
+Target (test) AUROC: 0.5595238095238095
+Run #6
+Target model (train): acc: 0.9286, F1: 0.9425, AUROC: 1.0000
+Target model (test): acc: 0.7917, F1: 0.8485, AUROC: 0.7479
+Shadow model (train): acc: 0.8714, F1: 0.9091, AUROC: 0.9547
+Shadow model (test): acc: 0.7500, F1: 0.8421, AUROC: 0.8739
+Shadow (train) AUROC: 0.7148809523809524
+Target (test) AUROC: 0.6342261904761906
+Run #7
+Target model (train): acc: 0.9714, F1: 0.9783, AUROC: 0.9982
+Target model (test): acc: 0.7083, F1: 0.7879, AUROC: 0.8487
+Shadow model (train): acc: 0.8857, F1: 0.9130, AUROC: 0.9316
+Shadow model (test): acc: 0.6667, F1: 0.8000, AUROC: 0.6639
+Shadow (train) AUROC: 0.8142857142857143
+Target (test) AUROC: 0.5994047619047619
+glo_mia,none,None,mutag,0.25,0.6702127659574468,0.5714285714285714,0.8839285714285714,0.7830923997532264,0.7801418439716312
+
+----------------ITERATION 2/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.8714, F1: 0.9109, AUROC: 0.9629
+Target model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.6815
+Shadow model (train): acc: 0.7286, F1: 0.7816, AUROC: 0.9030
+Shadow model (test): acc: 0.6250, F1: 0.6667, AUROC: 0.6434
+Shadow (train) AUROC: 0.6866071428571429
+Target (test) AUROC: 0.5089285714285714
+Run #2
+Target model (train): acc: 0.8857, F1: 0.9200, AUROC: 0.9928
+Target model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.8889
+Shadow model (train): acc: 0.9286, F1: 0.9533, AUROC: 1.0000
+Shadow model (test): acc: 0.6250, F1: 0.7273, AUROC: 0.7413
+Shadow (train) AUROC: 0.8276785714285714
+Target (test) AUROC: 0.6166666666666666
+Run #3
+Target model (train): acc: 0.9286, F1: 0.9438, AUROC: 0.9909
+Target model (test): acc: 0.8333, F1: 0.8667, AUROC: 0.8963
+Shadow model (train): acc: 0.9857, F1: 0.9901, AUROC: 0.9990
+Shadow model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.8252
+Shadow (train) AUROC: 0.887202380952381
+Target (test) AUROC: 0.493452380952381
+Run #4
+Target model (train): acc: 0.8571, F1: 0.9020, AUROC: 0.9638
+Target model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.8889
+Shadow model (train): acc: 0.9286, F1: 0.9533, AUROC: 0.9856
+Shadow model (test): acc: 0.5833, F1: 0.7059, AUROC: 0.6993
+Shadow (train) AUROC: 0.8041666666666668
+Target (test) AUROC: 0.47559523809523807
+Run #5
+Target model (train): acc: 0.9286, F1: 0.9474, AUROC: 0.9719
+Target model (test): acc: 0.7083, F1: 0.7879, AUROC: 0.8444
+Shadow model (train): acc: 0.9571, F1: 0.9709, AUROC: 0.9959
+Shadow model (test): acc: 0.6250, F1: 0.7273, AUROC: 0.4825
+Shadow (train) AUROC: 0.9110119047619047
+Target (test) AUROC: 0.58125
+Run #6
+Target model (train): acc: 0.9286, F1: 0.9462, AUROC: 0.9864
+Target model (test): acc: 0.7500, F1: 0.8125, AUROC: 0.8370
+Shadow model (train): acc: 0.9000, F1: 0.9263, AUROC: 0.9990
+Shadow model (test): acc: 0.5833, F1: 0.6875, AUROC: 0.5245
+Shadow (train) AUROC: 0.8017857142857142
+Target (test) AUROC: 0.6363095238095238
+Run #7
+Target model (train): acc: 0.8286, F1: 0.8846, AUROC: 0.9085
+Target model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.8296
+Shadow model (train): acc: 0.9714, F1: 0.9808, AUROC: 0.9979
+Shadow model (test): acc: 0.6667, F1: 0.7500, AUROC: 0.7063
+Shadow (train) AUROC: 0.9285714285714285
+Target (test) AUROC: 0.5517857142857143
+/home/hice1/khom9/.local/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1731: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 due to no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", result.shape[0])
+glo_mia,none,None,mutag,0.25,0.2553191489361702,0.4428571428571429,0.9476190476190477,0.713283180715314,0.0
+
+----------------ITERATION 3/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.8857, F1: 0.9259, AUROC: 0.9329
+Target model (test): acc: 0.6667, F1: 0.7647, AUROC: 0.5859
+Shadow model (train): acc: 0.7571, F1: 0.7385, AUROC: 0.9700
+Shadow model (test): acc: 0.4583, F1: 0.3158, AUROC: 0.8370
+Shadow (train) AUROC: 0.774107142857143
+Target (test) AUROC: 0.5928571428571429
+Run #2
+Target model (train): acc: 0.9429, F1: 0.9643, AUROC: 0.9676
+Target model (test): acc: 0.7917, F1: 0.8485, AUROC: 0.6719
+Shadow model (train): acc: 0.9429, F1: 0.9524, AUROC: 0.9967
+Shadow model (test): acc: 0.7917, F1: 0.8485, AUROC: 0.8444
+Shadow (train) AUROC: 0.8363095238095238
+Target (test) AUROC: 0.5654761904761906
+Run #3
+Target model (train): acc: 0.9286, F1: 0.9541, AUROC: 0.9815
+Target model (test): acc: 0.8750, F1: 0.9091, AUROC: 0.8672
+Shadow model (train): acc: 0.9143, F1: 0.9211, AUROC: 0.9825
+Shadow model (test): acc: 0.7500, F1: 0.7692, AUROC: 0.9037
+Shadow (train) AUROC: 0.7202380952380952
+Target (test) AUROC: 0.637202380952381
+Run #4
+Target model (train): acc: 0.9143, F1: 0.9434, AUROC: 0.9792
+Target model (test): acc: 0.5833, F1: 0.7222, AUROC: 0.4844
+Shadow model (train): acc: 0.9286, F1: 0.9412, AUROC: 0.9917
+Shadow model (test): acc: 0.8333, F1: 0.8750, AUROC: 0.8519
+Shadow (train) AUROC: 0.7970238095238095
+Target (test) AUROC: 0.6494047619047618
+Run #5
+Target model (train): acc: 0.9286, F1: 0.9541, AUROC: 0.9803
+Target model (test): acc: 0.6667, F1: 0.7500, AUROC: 0.6250
+Shadow model (train): acc: 0.9571, F1: 0.9639, AUROC: 0.9975
+Shadow model (test): acc: 0.8750, F1: 0.9032, AUROC: 0.8815
+Shadow (train) AUROC: 0.900297619047619
+Target (test) AUROC: 0.6279761904761905
+Run #6
+Target model (train): acc: 0.9429, F1: 0.9643, AUROC: 0.9873
+Target model (test): acc: 0.7917, F1: 0.8571, AUROC: 0.7500
+Shadow model (train): acc: 0.8857, F1: 0.8919, AUROC: 0.9817
+Shadow model (test): acc: 0.8750, F1: 0.8889, AUROC: 0.9556
+Shadow (train) AUROC: 0.8482142857142857
+Target (test) AUROC: 0.5380952380952381
+Run #7
+Target model (train): acc: 0.9429, F1: 0.9630, AUROC: 0.9896
+Target model (test): acc: 0.8750, F1: 0.9143, AUROC: 0.8750
+Shadow model (train): acc: 0.9000, F1: 0.9114, AUROC: 0.9575
+Shadow model (test): acc: 0.6250, F1: 0.6667, AUROC: 0.7481
+Shadow (train) AUROC: 0.8413690476190476
+Target (test) AUROC: 0.65
+glo_mia,none,None,mutag,0.25,0.6595744680851063,0.6351190476190477,0.8714285714285714,0.8117258549778277,0.746031746031746
+
+----------------ITERATION 4/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9429, F1: 0.9535, AUROC: 0.9855
+Target model (test): acc: 0.8750, F1: 0.8966, AUROC: 0.8071
+Shadow model (train): acc: 0.9714, F1: 0.9811, AUROC: 1.0000
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.7143
+Shadow (train) AUROC: 0.8315476190476191
+Target (test) AUROC: 0.6279761904761905
+Run #2
+Target model (train): acc: 0.9143, F1: 0.9318, AUROC: 0.9592
+Target model (test): acc: 0.7917, F1: 0.8276, AUROC: 0.8571
+Shadow model (train): acc: 0.8571, F1: 0.8936, AUROC: 1.0000
+Shadow model (test): acc: 0.6250, F1: 0.6897, AUROC: 0.6975
+Shadow (train) AUROC: 0.824404761904762
+Target (test) AUROC: 0.5220238095238094
+Run #3
+Target model (train): acc: 0.8571, F1: 0.8913, AUROC: 0.8801
+Target model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.7357
+Shadow model (train): acc: 0.9000, F1: 0.9369, AUROC: 0.9786
+Shadow model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.8067
+Shadow (train) AUROC: 0.7678571428571429
+Target (test) AUROC: 0.49642857142857144
+Run #4
+Target model (train): acc: 0.9000, F1: 0.9213, AUROC: 0.9855
+Target model (test): acc: 0.7500, F1: 0.8000, AUROC: 0.8500
+Shadow model (train): acc: 0.9857, F1: 0.9905, AUROC: 1.0000
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.7983
+Shadow (train) AUROC: 0.8717261904761905
+Target (test) AUROC: 0.6166666666666666
+Run #5
+Target model (train): acc: 0.9286, F1: 0.9412, AUROC: 0.9830
+Target model (test): acc: 0.8750, F1: 0.8966, AUROC: 0.8643
+Shadow model (train): acc: 0.9714, F1: 0.9811, AUROC: 1.0000
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.6471
+Shadow (train) AUROC: 0.8214285714285714
+Target (test) AUROC: 0.43779761904761905
+Run #6
+Target model (train): acc: 0.9000, F1: 0.9231, AUROC: 0.9660
+Target model (test): acc: 0.8750, F1: 0.8966, AUROC: 0.9571
+Shadow model (train): acc: 0.9143, F1: 0.9455, AUROC: 0.9850
+Shadow model (test): acc: 0.7500, F1: 0.8421, AUROC: 0.7479
+Shadow (train) AUROC: 0.6625
+Target (test) AUROC: 0.5407738095238096
+Run #7
+Target model (train): acc: 0.5571, F1: 0.4151, AUROC: 0.9362
+Target model (test): acc: 0.5000, F1: 0.3333, AUROC: 0.8071
+Shadow model (train): acc: 1.0000, F1: 1.0000, AUROC: 1.0000
+Shadow model (test): acc: 0.7917, F1: 0.8571, AUROC: 0.7563
+Shadow (train) AUROC: 0.9345238095238095
+Target (test) AUROC: 0.5083333333333333
+glo_mia,none,None,mutag,0.25,0.3723404255319149,0.4666666666666667,0.919047619047619,0.7039650361678248,0.40404040404040403
+
+----------------ITERATION 5/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9429, F1: 0.9608, AUROC: 0.9474
+Target model (test): acc: 0.6667, F1: 0.7333, AUROC: 0.8056
+Shadow model (train): acc: 0.8000, F1: 0.8627, AUROC: 0.9458
+Shadow model (test): acc: 0.7500, F1: 0.8571, AUROC: 0.7315
+Shadow (train) AUROC: 0.7089285714285715
+Target (test) AUROC: 0.5738095238095238
+Run #2
+Target model (train): acc: 0.9571, F1: 0.9714, AUROC: 0.9876
+Target model (test): acc: 0.5833, F1: 0.6875, AUROC: 0.6667
+Shadow model (train): acc: 0.9286, F1: 0.9412, AUROC: 0.9843
+Shadow model (test): acc: 0.7083, F1: 0.8108, AUROC: 0.6944
+Shadow (train) AUROC: 0.7413690476190475
+Target (test) AUROC: 0.6494047619047619
+Run #3
+Target model (train): acc: 0.9571, F1: 0.9709, AUROC: 0.9917
+Target model (test): acc: 0.6667, F1: 0.7333, AUROC: 0.7014
+Shadow model (train): acc: 0.8857, F1: 0.9167, AUROC: 0.9851
+Shadow model (test): acc: 0.7083, F1: 0.8293, AUROC: 0.7315
+Shadow (train) AUROC: 0.8321428571428571
+Target (test) AUROC: 0.6511904761904762
+Run #4
+Target model (train): acc: 0.9286, F1: 0.9533, AUROC: 0.9628
+Target model (test): acc: 0.5833, F1: 0.6875, AUROC: 0.8681
+Shadow model (train): acc: 0.9571, F1: 0.9663, AUROC: 0.9974
+Shadow model (test): acc: 0.7083, F1: 0.8205, AUROC: 0.6481
+Shadow (train) AUROC: 0.8610119047619048
+Target (test) AUROC: 0.7083333333333333
+Run #5
+Target model (train): acc: 0.9429, F1: 0.9623, AUROC: 0.9876
+Target model (test): acc: 0.6250, F1: 0.7097, AUROC: 0.8542
+Shadow model (train): acc: 0.9143, F1: 0.9268, AUROC: 0.9878
+Shadow model (test): acc: 0.6667, F1: 0.7778, AUROC: 0.5000
+Shadow (train) AUROC: 0.9047619047619048
+Target (test) AUROC: 0.6291666666666667
+Run #6
+Target model (train): acc: 0.9143, F1: 0.9400, AUROC: 0.9752
+Target model (test): acc: 0.7500, F1: 0.7692, AUROC: 0.8472
+Shadow model (train): acc: 0.8571, F1: 0.8750, AUROC: 0.9834
+Shadow model (test): acc: 0.5833, F1: 0.6875, AUROC: 0.6667
+Shadow (train) AUROC: 0.825
+Target (test) AUROC: 0.5517857142857143
+Run #7
+Target model (train): acc: 0.9714, F1: 0.9808, AUROC: 0.9742
+Target model (test): acc: 0.6250, F1: 0.7097, AUROC: 0.7153
+Shadow model (train): acc: 0.9571, F1: 0.9655, AUROC: 0.9904
+Shadow model (test): acc: 0.7083, F1: 0.8205, AUROC: 0.6019
+Shadow (train) AUROC: 0.9151785714285715
+Target (test) AUROC: 0.5839285714285714
+glo_mia,none,None,mutag,0.25,0.776595744680851,0.6678571428571428,0.8976190476190476,0.8262902809583195,0.8590604026845637
+
+----------------ITERATION 6/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9143, F1: 0.9375, AUROC: 0.9876
+Target model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.8992
+Shadow model (train): acc: 0.8857, F1: 0.9200, AUROC: 0.9701
+Shadow model (test): acc: 0.8750, F1: 0.9189, AUROC: 0.7479
+Shadow (train) AUROC: 0.7261904761904762
+Target (test) AUROC: 0.4523809523809524
+Run #2
+Target model (train): acc: 0.9143, F1: 0.9375, AUROC: 0.9876
+Target model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.8571
+Shadow model (train): acc: 0.8857, F1: 0.9048, AUROC: 0.9846
+Shadow model (test): acc: 0.5833, F1: 0.6429, AUROC: 0.7311
+Shadow (train) AUROC: 0.7886904761904762
+Target (test) AUROC: 0.49523809523809514
+Run #3
+Target model (train): acc: 0.8714, F1: 0.8941, AUROC: 0.9751
+Target model (test): acc: 0.7917, F1: 0.8387, AUROC: 0.7815
+Shadow model (train): acc: 0.6000, F1: 0.5758, AUROC: 0.9257
+Shadow model (test): acc: 0.3750, F1: 0.4444, AUROC: 0.4034
+Shadow (train) AUROC: 0.7279761904761906
+Target (test) AUROC: 0.5116071428571429
+Run #4
+Target model (train): acc: 0.9286, F1: 0.9451, AUROC: 0.9707
+Target model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.8403
+Shadow model (train): acc: 0.7429, F1: 0.7568, AUROC: 0.9819
+Shadow model (test): acc: 0.5000, F1: 0.5385, AUROC: 0.6387
+Shadow (train) AUROC: 0.7398809523809524
+Target (test) AUROC: 0.5660714285714286
+Run #5
+Target model (train): acc: 0.9429, F1: 0.9574, AUROC: 0.9964
+Target model (test): acc: 0.7500, F1: 0.8333, AUROC: 0.8067
+Shadow model (train): acc: 0.9286, F1: 0.9474, AUROC: 0.9946
+Shadow model (test): acc: 0.8333, F1: 0.8824, AUROC: 0.9160
+Shadow (train) AUROC: 0.824404761904762
+Target (test) AUROC: 0.5678571428571428
+Run #6
+Target model (train): acc: 0.9286, F1: 0.9462, AUROC: 0.9707
+Target model (test): acc: 0.8333, F1: 0.8750, AUROC: 0.8739
+Shadow model (train): acc: 0.8857, F1: 0.9200, AUROC: 0.9774
+Shadow model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.8992
+Shadow (train) AUROC: 0.7529761904761905
+Target (test) AUROC: 0.6684523809523809
+Run #7
+Target model (train): acc: 0.8429, F1: 0.8706, AUROC: 0.9707
+Target model (test): acc: 0.6667, F1: 0.7333, AUROC: 0.8571
+Shadow model (train): acc: 0.9429, F1: 0.9583, AUROC: 0.9592
+Shadow model (test): acc: 0.7917, F1: 0.8571, AUROC: 0.6891
+Shadow (train) AUROC: 0.805952380952381
+Target (test) AUROC: 0.6160714285714286
+glo_mia,none,None,mutag,0.25,0.6702127659574468,0.6017857142857143,0.8779761904761906,0.7978495773826328,0.7862068965517242
+
+----------------ITERATION 7/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9429, F1: 0.9592, AUROC: 0.9932
+Target model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.7857
+Shadow model (train): acc: 0.9286, F1: 0.9524, AUROC: 0.9760
+Shadow model (test): acc: 0.5833, F1: 0.6667, AUROC: 0.7708
+Shadow (train) AUROC: 0.8547619047619048
+Target (test) AUROC: 0.6678571428571428
+Run #2
+Target model (train): acc: 0.9714, F1: 0.9796, AUROC: 0.9981
+Target model (test): acc: 0.5833, F1: 0.7059, AUROC: 0.7286
+Shadow model (train): acc: 0.9000, F1: 0.9333, AUROC: 0.9150
+Shadow model (test): acc: 0.7083, F1: 0.7586, AUROC: 0.8333
+Shadow (train) AUROC: 0.8401785714285713
+Target (test) AUROC: 0.5508928571428571
+Run #3
+Target model (train): acc: 0.9000, F1: 0.9333, AUROC: 0.9942
+Target model (test): acc: 0.6250, F1: 0.7429, AUROC: 0.7143
+Shadow model (train): acc: 0.9429, F1: 0.9615, AUROC: 0.9830
+Shadow model (test): acc: 0.6667, F1: 0.7143, AUROC: 0.6944
+Shadow (train) AUROC: 0.9101190476190475
+Target (test) AUROC: 0.6544642857142857
+Run #4
+Target model (train): acc: 0.9429, F1: 0.9592, AUROC: 0.9883
+Target model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.7643
+Shadow model (train): acc: 0.9429, F1: 0.9592, AUROC: 0.9850
+Shadow model (test): acc: 0.7917, F1: 0.7826, AUROC: 0.7847
+Shadow (train) AUROC: 0.8321428571428572
+Target (test) AUROC: 0.5595238095238095
+Run #5
+Target model (train): acc: 0.9714, F1: 0.9796, AUROC: 0.9971
+Target model (test): acc: 0.6250, F1: 0.7273, AUROC: 0.7071
+Shadow model (train): acc: 0.9286, F1: 0.9524, AUROC: 1.0000
+Shadow model (test): acc: 0.7917, F1: 0.8148, AUROC: 0.8264
+Shadow (train) AUROC: 0.9068452380952381
+Target (test) AUROC: 0.6952380952380952
+Run #6
+Target model (train): acc: 0.9857, F1: 0.9899, AUROC: 0.9971
+Target model (test): acc: 0.7083, F1: 0.7879, AUROC: 0.7071
+Shadow model (train): acc: 0.8857, F1: 0.9130, AUROC: 0.9990
+Shadow model (test): acc: 0.7083, F1: 0.6667, AUROC: 0.7500
+Shadow (train) AUROC: 0.8410714285714287
+Target (test) AUROC: 0.6479166666666667
+Run #7
+Target model (train): acc: 0.9429, F1: 0.9600, AUROC: 0.9971
+Target model (test): acc: 0.6667, F1: 0.7500, AUROC: 0.7429
+Shadow model (train): acc: 0.9571, F1: 0.9697, AUROC: 0.9970
+Shadow model (test): acc: 0.7917, F1: 0.8148, AUROC: 0.8194
+Shadow (train) AUROC: 0.7639880952380953
+Target (test) AUROC: 0.674404761904762
+glo_mia,none,None,mutag,0.25,0.425531914893617,0.5339285714285714,0.9339285714285714,0.789201466290874,0.4
+
+----------------ITERATION 8/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9714, F1: 0.9800, AUROC: 0.9981
+Target model (test): acc: 0.5417, F1: 0.5926, AUROC: 0.5734
+Shadow model (train): acc: 0.9143, F1: 0.9388, AUROC: 0.9621
+Shadow model (test): acc: 0.7917, F1: 0.8276, AUROC: 0.8047
+Shadow (train) AUROC: 0.7327380952380953
+Target (test) AUROC: 0.7291666666666666
+Run #2
+Target model (train): acc: 0.9857, F1: 0.9897, AUROC: 1.0000
+Target model (test): acc: 0.6667, F1: 0.6923, AUROC: 0.6573
+Shadow model (train): acc: 0.8857, F1: 0.9216, AUROC: 0.9380
+Shadow model (test): acc: 0.6667, F1: 0.7778, AUROC: 0.5625
+Shadow (train) AUROC: 0.7976190476190476
+Target (test) AUROC: 0.5821428571428572
+Run #3
+Target model (train): acc: 0.9571, F1: 0.9684, AUROC: 0.9942
+Target model (test): acc: 0.6250, F1: 0.6400, AUROC: 0.5944
+Shadow model (train): acc: 0.9286, F1: 0.9495, AUROC: 0.9519
+Shadow model (test): acc: 0.8750, F1: 0.9032, AUROC: 0.7891
+Shadow (train) AUROC: 0.8288690476190476
+Target (test) AUROC: 0.6008928571428572
+Run #4
+Target model (train): acc: 0.9857, F1: 0.9897, AUROC: 1.0000
+Target model (test): acc: 0.6667, F1: 0.7143, AUROC: 0.6154
+Shadow model (train): acc: 0.8000, F1: 0.8704, AUROC: 0.9195
+Shadow model (test): acc: 0.7083, F1: 0.8108, AUROC: 0.6875
+Shadow (train) AUROC: 0.7017857142857143
+Target (test) AUROC: 0.48392857142857143
+Run #5
+Target model (train): acc: 0.9714, F1: 0.9796, AUROC: 0.9942
+Target model (test): acc: 0.5000, F1: 0.5714, AUROC: 0.4266
+Shadow model (train): acc: 0.9286, F1: 0.9495, AUROC: 0.9611
+Shadow model (test): acc: 0.7917, F1: 0.8387, AUROC: 0.6797
+Shadow (train) AUROC: 0.7836309523809524
+Target (test) AUROC: 0.7452380952380953
+Run #6
+Target model (train): acc: 0.9143, F1: 0.9362, AUROC: 0.9776
+Target model (test): acc: 0.4167, F1: 0.4615, AUROC: 0.5455
+Shadow model (train): acc: 0.8286, F1: 0.8868, AUROC: 0.9676
+Shadow model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.8047
+Shadow (train) AUROC: 0.6607142857142858
+Target (test) AUROC: 0.7678571428571428
+Run #7
+Target model (train): acc: 0.9714, F1: 0.9796, AUROC: 0.9981
+Target model (test): acc: 0.4583, F1: 0.5185, AUROC: 0.5664
+Shadow model (train): acc: 0.9286, F1: 0.9495, AUROC: 0.9574
+Shadow model (test): acc: 0.8750, F1: 0.9032, AUROC: 0.8516
+Shadow (train) AUROC: 0.8848214285714285
+Target (test) AUROC: 0.6029761904761904
+glo_mia,none,None,mutag,0.25,0.5425531914893617,0.6220238095238095,0.7928571428571428,0.8493479328772295,0.5981308411214953
+
+----------------ITERATION 9/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.8429, F1: 0.9027, AUROC: 0.8829
+Target model (test): acc: 0.6250, F1: 0.7429, AUROC: 0.9161
+Shadow model (train): acc: 0.9000, F1: 0.9263, AUROC: 0.9747
+Shadow model (test): acc: 0.6667, F1: 0.7500, AUROC: 0.7731
+Shadow (train) AUROC: 0.7863095238095239
+Target (test) AUROC: 0.6056547619047619
+Run #2
+Target model (train): acc: 0.8571, F1: 0.9107, AUROC: 0.9205
+Target model (test): acc: 0.6667, F1: 0.7647, AUROC: 0.7692
+Shadow model (train): acc: 0.9000, F1: 0.9157, AUROC: 0.9930
+Shadow model (test): acc: 0.5833, F1: 0.5833, AUROC: 0.8908
+Shadow (train) AUROC: 0.8583333333333334
+Target (test) AUROC: 0.6005952380952382
+Run #3
+Target model (train): acc: 0.9286, F1: 0.9533, AUROC: 0.9917
+Target model (test): acc: 0.7500, F1: 0.8125, AUROC: 0.8741
+Shadow model (train): acc: 0.9286, F1: 0.9438, AUROC: 0.9790
+Shadow model (test): acc: 0.6250, F1: 0.6897, AUROC: 0.8824
+Shadow (train) AUROC: 0.8747023809523808
+Target (test) AUROC: 0.5666666666666667
+Run #4
+Target model (train): acc: 0.9286, F1: 0.9505, AUROC: 0.9794
+Target model (test): acc: 0.5417, F1: 0.6452, AUROC: 0.7273
+Shadow model (train): acc: 0.8286, F1: 0.8500, AUROC: 0.9677
+Shadow model (test): acc: 0.5833, F1: 0.6154, AUROC: 0.7479
+Shadow (train) AUROC: 0.7559523809523809
+Target (test) AUROC: 0.65625
+Run #5
+Target model (train): acc: 0.9571, F1: 0.9709, AUROC: 0.9959
+Target model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.8601
+Shadow model (train): acc: 0.9143, F1: 0.9362, AUROC: 0.9851
+Shadow model (test): acc: 0.7083, F1: 0.7586, AUROC: 0.8487
+Shadow (train) AUROC: 0.8464285714285714
+Target (test) AUROC: 0.6330357142857143
+Run #6
+Target model (train): acc: 0.9714, F1: 0.9808, AUROC: 1.0000
+Target model (test): acc: 0.6250, F1: 0.7273, AUROC: 0.7692
+Shadow model (train): acc: 0.8857, F1: 0.9111, AUROC: 0.9685
+Shadow model (test): acc: 0.6250, F1: 0.6897, AUROC: 0.7899
+Shadow (train) AUROC: 0.7886904761904763
+Target (test) AUROC: 0.5208333333333333
+Run #7
+Target model (train): acc: 0.9429, F1: 0.9623, AUROC: 0.9804
+Target model (test): acc: 0.7083, F1: 0.7879, AUROC: 0.7972
+Shadow model (train): acc: 0.8714, F1: 0.9053, AUROC: 0.9537
+Shadow model (test): acc: 0.8333, F1: 0.8750, AUROC: 0.8739
+Shadow (train) AUROC: 0.7345238095238096
+Target (test) AUROC: 0.43214285714285716
+glo_mia,none,None,mutag,0.25,0.6170212765957447,0.6916666666666667,0.80625,0.8695060076876627,0.6842105263157895
+
+----------------ITERATION 10/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9714, F1: 0.9811, AUROC: 0.9979
+Target model (test): acc: 0.7500, F1: 0.8421, AUROC: 0.5833
+Shadow model (train): acc: 0.9571, F1: 0.9639, AUROC: 0.9916
+Shadow model (test): acc: 0.7500, F1: 0.8000, AUROC: 0.8929
+Shadow (train) AUROC: 0.7678571428571429
+Target (test) AUROC: 0.5148809523809523
+Run #2
+Target model (train): acc: 0.9714, F1: 0.9811, AUROC: 0.9936
+Target model (test): acc: 0.7917, F1: 0.8718, AUROC: 0.6389
+Shadow model (train): acc: 0.9000, F1: 0.9157, AUROC: 0.9765
+Shadow model (test): acc: 0.6250, F1: 0.6087, AUROC: 0.8000
+Shadow (train) AUROC: 0.8229166666666666
+Target (test) AUROC: 0.6291666666666667
+Run #3
+Target model (train): acc: 0.9571, F1: 0.9720, AUROC: 0.9968
+Target model (test): acc: 0.7500, F1: 0.8500, AUROC: 0.5741
+Shadow model (train): acc: 0.5857, F1: 0.4528, AUROC: 0.8150
+Shadow model (test): acc: 0.4583, F1: 0.1333, AUROC: 0.9000
+Shadow (train) AUROC: 0.6383928571428572
+Target (test) AUROC: 0.6648809523809525
+Run #4
+Target model (train): acc: 0.9714, F1: 0.9808, AUROC: 0.9915
+Target model (test): acc: 0.7083, F1: 0.8205, AUROC: 0.6481
+Shadow model (train): acc: 0.7857, F1: 0.7761, AUROC: 0.9924
+Shadow model (test): acc: 0.5833, F1: 0.4444, AUROC: 0.8786
+Shadow (train) AUROC: 0.7047619047619047
+Target (test) AUROC: 0.6595238095238096
+Run #5
+Target model (train): acc: 0.9571, F1: 0.9720, AUROC: 0.9968
+Target model (test): acc: 0.7500, F1: 0.8500, AUROC: 0.5926
+Shadow model (train): acc: 0.9143, F1: 0.9286, AUROC: 0.9891
+Shadow model (test): acc: 0.7917, F1: 0.8148, AUROC: 0.8786
+Shadow (train) AUROC: 0.7970238095238095
+Target (test) AUROC: 0.6196428571428572
+Run #6
+Target model (train): acc: 0.9429, F1: 0.9600, AUROC: 0.9893
+Target model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.7963
+Shadow model (train): acc: 0.9429, F1: 0.9512, AUROC: 0.9941
+Shadow model (test): acc: 0.7917, F1: 0.8148, AUROC: 0.8500
+Shadow (train) AUROC: 0.8702380952380953
+Target (test) AUROC: 0.4869047619047619
+Run #7
+Target model (train): acc: 0.9286, F1: 0.9524, AUROC: 0.9850
+Target model (test): acc: 0.7083, F1: 0.8108, AUROC: 0.5926
+Shadow model (train): acc: 0.9000, F1: 0.9136, AUROC: 0.9840
+Shadow model (test): acc: 0.8333, F1: 0.8571, AUROC: 0.9214
+Shadow (train) AUROC: 0.7327380952380953
+Target (test) AUROC: 0.5080357142857143
+glo_mia,none,None,mutag,0.25,0.723404255319149,0.580952380952381,0.8755952380952381,0.7782671594003234,0.8266666666666667
+
+----------------ITERATION 11/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.8571, F1: 0.8980, AUROC: 0.9607
+Target model (test): acc: 0.6667, F1: 0.7500, AUROC: 0.6929
+Shadow model (train): acc: 0.9429, F1: 0.9608, AUROC: 0.9900
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.6807
+Shadow (train) AUROC: 0.8565476190476191
+Target (test) AUROC: 0.6017857142857144
+Run #2
+Target model (train): acc: 0.9000, F1: 0.9263, AUROC: 0.9843
+Target model (test): acc: 0.5833, F1: 0.7059, AUROC: 0.8286
+Shadow model (train): acc: 0.9429, F1: 0.9600, AUROC: 0.9930
+Shadow model (test): acc: 0.7500, F1: 0.8333, AUROC: 0.5966
+Shadow (train) AUROC: 0.9297619047619048
+Target (test) AUROC: 0.7511904761904762
+Run #3
+Target model (train): acc: 0.9857, F1: 0.9888, AUROC: 1.0000
+Target model (test): acc: 0.7083, F1: 0.7407, AUROC: 0.7071
+Shadow model (train): acc: 0.9571, F1: 0.9703, AUROC: 0.9950
+Shadow model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.7059
+Shadow (train) AUROC: 0.8720238095238094
+Target (test) AUROC: 0.6645833333333334
+Run #4
+Target model (train): acc: 0.9143, F1: 0.9302, AUROC: 0.9755
+Target model (test): acc: 0.7500, F1: 0.7857, AUROC: 0.7857
+Shadow model (train): acc: 0.8429, F1: 0.9009, AUROC: 0.9730
+Shadow model (test): acc: 0.7917, F1: 0.8718, AUROC: 0.7143
+Shadow (train) AUROC: 0.8455357142857143
+Target (test) AUROC: 0.5023809523809524
+Run #5
+Target model (train): acc: 0.9857, F1: 0.9888, AUROC: 1.0000
+Target model (test): acc: 0.7083, F1: 0.7586, AUROC: 0.7786
+Shadow model (train): acc: 0.9571, F1: 0.9709, AUROC: 0.9970
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.7563
+Shadow (train) AUROC: 0.6604166666666667
+Target (test) AUROC: 0.5455357142857142
+Run #6
+Target model (train): acc: 0.8429, F1: 0.8571, AUROC: 1.0000
+Target model (test): acc: 0.7500, F1: 0.7857, AUROC: 0.7214
+Shadow model (train): acc: 0.8857, F1: 0.9259, AUROC: 0.9690
+Shadow model (test): acc: 0.7500, F1: 0.8421, AUROC: 0.8235
+Shadow (train) AUROC: 0.8958333333333334
+Target (test) AUROC: 0.643452380952381
+Run #7
+Target model (train): acc: 0.9714, F1: 0.9778, AUROC: 0.9965
+Target model (test): acc: 0.7500, F1: 0.7857, AUROC: 0.7857
+Shadow model (train): acc: 0.9714, F1: 0.9800, AUROC: 0.9950
+Shadow model (test): acc: 0.7500, F1: 0.8333, AUROC: 0.7059
+Shadow (train) AUROC: 0.7380952380952381
+Target (test) AUROC: 0.5488095238095239
+glo_mia,none,None,mutag,0.25,0.5638297872340425,0.6773809523809524,0.9223214285714286,0.8677879439426227,0.6434782608695652
+
+----------------ITERATION 12/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9571, F1: 0.9709, AUROC: 0.9948
+Target model (test): acc: 0.7083, F1: 0.7407, AUROC: 0.6713
+Shadow model (train): acc: 0.9714, F1: 0.9767, AUROC: 0.9991
+Shadow model (test): acc: 0.7917, F1: 0.8387, AUROC: 0.8796
+Shadow (train) AUROC: 0.8208333333333333
+Target (test) AUROC: 0.6354166666666666
+Run #2
+Target model (train): acc: 0.9429, F1: 0.9623, AUROC: 0.9948
+Target model (test): acc: 0.7917, F1: 0.8276, AUROC: 0.8112
+Shadow model (train): acc: 0.9286, F1: 0.9451, AUROC: 0.9862
+Shadow model (test): acc: 0.7500, F1: 0.8333, AUROC: 0.6944
+Shadow (train) AUROC: 0.8154761904761905
+Target (test) AUROC: 0.6303571428571428
+Run #3
+Target model (train): acc: 0.9571, F1: 0.9714, AUROC: 0.9979
+Target model (test): acc: 0.6667, F1: 0.7500, AUROC: 0.7133
+Shadow model (train): acc: 0.9286, F1: 0.9398, AUROC: 0.9871
+Shadow model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.7222
+Shadow (train) AUROC: 0.9035714285714286
+Target (test) AUROC: 0.6339285714285714
+Run #4
+Target model (train): acc: 0.9429, F1: 0.9623, AUROC: 0.9959
+Target model (test): acc: 0.7500, F1: 0.8000, AUROC: 0.7343
+Shadow model (train): acc: 0.8571, F1: 0.8684, AUROC: 0.9879
+Shadow model (test): acc: 0.5833, F1: 0.6429, AUROC: 0.7963
+Shadow (train) AUROC: 0.8047619047619048
+Target (test) AUROC: 0.6297619047619047
+Run #5
+Target model (train): acc: 0.9571, F1: 0.9714, AUROC: 0.9969
+Target model (test): acc: 0.8333, F1: 0.8667, AUROC: 0.8112
+Shadow model (train): acc: 0.9286, F1: 0.9438, AUROC: 0.9845
+Shadow model (test): acc: 0.8333, F1: 0.8889, AUROC: 0.9074
+Shadow (train) AUROC: 0.8970238095238094
+Target (test) AUROC: 0.6422619047619048
+Run #6
+Target model (train): acc: 0.9286, F1: 0.9533, AUROC: 0.9928
+Target model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.7692
+Shadow model (train): acc: 0.8143, F1: 0.8539, AUROC: 0.9104
+Shadow model (test): acc: 0.6667, F1: 0.7778, AUROC: 0.6204
+Shadow (train) AUROC: 0.8303571428571429
+Target (test) AUROC: 0.6705357142857142
+Run #7
+Target model (train): acc: 0.9429, F1: 0.9615, AUROC: 0.9897
+Target model (test): acc: 0.7083, F1: 0.7742, AUROC: 0.7622
+Shadow model (train): acc: 0.9571, F1: 0.9647, AUROC: 0.9897
+Shadow model (test): acc: 0.6250, F1: 0.7273, AUROC: 0.7407
+Shadow (train) AUROC: 0.8485119047619047
+Target (test) AUROC: 0.6172619047619048
+glo_mia,none,None,mutag,0.25,0.648936170212766,0.6708333333333333,0.9363095238095238,0.8439011852321063,0.7555555555555555
+
+----------------ITERATION 13/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9000, F1: 0.9263, AUROC: 0.9426
+Target model (test): acc: 0.7083, F1: 0.8000, AUROC: 0.7344
+Shadow model (train): acc: 0.9714, F1: 0.9778, AUROC: 0.9991
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.8333
+Shadow (train) AUROC: 0.8511904761904762
+Target (test) AUROC: 0.5139880952380952
+Run #2
+Target model (train): acc: 0.9429, F1: 0.9583, AUROC: 0.9926
+Target model (test): acc: 0.7083, F1: 0.8108, AUROC: 0.7188
+Shadow model (train): acc: 0.9857, F1: 0.9885, AUROC: 1.0000
+Shadow model (test): acc: 0.8750, F1: 0.9189, AUROC: 0.8981
+Shadow (train) AUROC: 0.8675595238095238
+Target (test) AUROC: 0.5178571428571428
+Run #3
+Target model (train): acc: 0.8857, F1: 0.9216, AUROC: 0.9870
+Target model (test): acc: 0.6667, F1: 0.8000, AUROC: 0.5078
+Shadow model (train): acc: 0.9286, F1: 0.9462, AUROC: 0.9292
+Shadow model (test): acc: 0.7917, F1: 0.8649, AUROC: 0.7963
+Shadow (train) AUROC: 0.8264880952380953
+Target (test) AUROC: 0.6273809523809524
+Run #4
+Target model (train): acc: 0.9429, F1: 0.9574, AUROC: 0.9898
+Target model (test): acc: 0.7083, F1: 0.8108, AUROC: 0.7656
+Shadow model (train): acc: 0.9714, F1: 0.9778, AUROC: 1.0000
+Shadow model (test): acc: 0.7500, F1: 0.8421, AUROC: 0.7500
+Shadow (train) AUROC: 0.9011904761904762
+Target (test) AUROC: 0.5726190476190476
+Run #5
+Target model (train): acc: 0.9143, F1: 0.9388, AUROC: 0.9870
+Target model (test): acc: 0.6667, F1: 0.7895, AUROC: 0.4688
+Shadow model (train): acc: 0.9429, F1: 0.9565, AUROC: 0.9825
+Shadow model (test): acc: 0.7917, F1: 0.8718, AUROC: 0.6296
+Shadow (train) AUROC: 0.8660714285714286
+Target (test) AUROC: 0.6595238095238095
+Run #6
+Target model (train): acc: 0.9429, F1: 0.9583, AUROC: 0.9824
+Target model (test): acc: 0.7500, F1: 0.8333, AUROC: 0.7969
+Shadow model (train): acc: 0.9857, F1: 0.9888, AUROC: 1.0000
+Shadow model (test): acc: 0.7500, F1: 0.8421, AUROC: 0.7778
+Shadow (train) AUROC: 0.8386904761904762
+Target (test) AUROC: 0.5857142857142857
+Run #7
+Target model (train): acc: 0.9143, F1: 0.9400, AUROC: 0.9815
+Target model (test): acc: 0.7083, F1: 0.8205, AUROC: 0.5859
+Shadow model (train): acc: 0.9286, F1: 0.9412, AUROC: 0.9930
+Shadow model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.7963
+Shadow (train) AUROC: 0.7392857142857143
+Target (test) AUROC: 0.5595238095238095
+glo_mia,none,None,mutag,0.25,0.5851063829787234,0.5202380952380952,0.8648809523809524,0.7393815980229241,0.6976744186046512
+
+----------------ITERATION 14/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.7286, F1: 0.7246, AUROC: 0.9345
+Target model (test): acc: 0.5833, F1: 0.6154, AUROC: 0.6471
+Shadow model (train): acc: 0.9429, F1: 0.9608, AUROC: 0.9967
+Shadow model (test): acc: 0.7083, F1: 0.7586, AUROC: 0.6806
+Shadow (train) AUROC: 0.8535714285714286
+Target (test) AUROC: 0.5136904761904761
+Run #2
+Target model (train): acc: 0.9571, F1: 0.9655, AUROC: 0.9828
+Target model (test): acc: 0.7500, F1: 0.8235, AUROC: 0.6639
+Shadow model (train): acc: 0.7000, F1: 0.7529, AUROC: 0.9767
+Shadow model (test): acc: 0.7083, F1: 0.7407, AUROC: 0.6667
+Shadow (train) AUROC: 0.5842261904761905
+Target (test) AUROC: 0.7101190476190476
+Run #3
+Target model (train): acc: 0.9429, F1: 0.9524, AUROC: 0.9871
+Target model (test): acc: 0.7917, F1: 0.8485, AUROC: 0.7647
+Shadow model (train): acc: 0.9429, F1: 0.9636, AUROC: 0.9989
+Shadow model (test): acc: 0.6250, F1: 0.7097, AUROC: 0.7569
+Shadow (train) AUROC: 0.8660714285714286
+Target (test) AUROC: 0.5214285714285715
+Run #4
+Target model (train): acc: 0.7571, F1: 0.7536, AUROC: 0.9750
+Target model (test): acc: 0.5833, F1: 0.6667, AUROC: 0.5546
+Shadow model (train): acc: 0.9857, F1: 0.9907, AUROC: 0.9989
+Shadow model (test): acc: 0.6250, F1: 0.7097, AUROC: 0.6944
+Shadow (train) AUROC: 0.93125
+Target (test) AUROC: 0.6130952380952381
+Run #5
+Target model (train): acc: 0.9286, F1: 0.9412, AUROC: 0.9742
+Target model (test): acc: 0.7083, F1: 0.7879, AUROC: 0.7479
+Shadow model (train): acc: 0.9857, F1: 0.9905, AUROC: 0.9989
+Shadow model (test): acc: 0.6667, F1: 0.7333, AUROC: 0.7708
+Shadow (train) AUROC: 0.9726190476190476
+Target (test) AUROC: 0.581845238095238
+Run #6
+Target model (train): acc: 0.8857, F1: 0.9149, AUROC: 0.9871
+Target model (test): acc: 0.7083, F1: 0.8000, AUROC: 0.6975
+Shadow model (train): acc: 0.9857, F1: 0.9905, AUROC: 0.9989
+Shadow model (test): acc: 0.7500, F1: 0.7273, AUROC: 0.8194
+Shadow (train) AUROC: 0.9154761904761904
+Target (test) AUROC: 0.5327380952380952
+Run #7
+Target model (train): acc: 0.7143, F1: 0.6970, AUROC: 0.9466
+Target model (test): acc: 0.5000, F1: 0.5714, AUROC: 0.5462
+Shadow model (train): acc: 0.9429, F1: 0.9636, AUROC: 0.9889
+Shadow model (test): acc: 0.5000, F1: 0.6250, AUROC: 0.6111
+Shadow (train) AUROC: 0.9327380952380953
+Target (test) AUROC: 0.6458333333333334
+glo_mia,none,None,mutag,0.25,0.7127659574468085,0.5648809523809524,0.9416666666666668,0.794312041925801,0.8137931034482758
+
+----------------ITERATION 15/15 (dataset=MUTAG, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9286, F1: 0.9524, AUROC: 0.9825
+Target model (test): acc: 0.8333, F1: 0.9048, AUROC: 0.6190
+Shadow model (train): acc: 0.7286, F1: 0.6667, AUROC: 0.9868
+Shadow model (test): acc: 0.5000, F1: 0.3333, AUROC: 0.6593
+Shadow (train) AUROC: 0.6952380952380952
+Target (test) AUROC: 0.4779761904761905
+Run #2
+Target model (train): acc: 0.8571, F1: 0.9107, AUROC: 0.9309
+Target model (test): acc: 0.8750, F1: 0.9302, AUROC: 0.8413
+Shadow model (train): acc: 0.9714, F1: 0.9744, AUROC: 0.9984
+Shadow model (test): acc: 0.8333, F1: 0.8750, AUROC: 0.7926
+Shadow (train) AUROC: 0.9392857142857144
+Target (test) AUROC: 0.45119047619047625
+Run #3
+Target model (train): acc: 0.8429, F1: 0.8952, AUROC: 0.8968
+Target model (test): acc: 0.7917, F1: 0.8780, AUROC: 0.9048
+Shadow model (train): acc: 0.9857, F1: 0.9867, AUROC: 1.0000
+Shadow model (test): acc: 0.7917, F1: 0.8276, AUROC: 0.8667
+Shadow (train) AUROC: 0.9074404761904762
+Target (test) AUROC: 0.5080357142857144
+Run #4
+Target model (train): acc: 0.9143, F1: 0.9400, AUROC: 0.9752
+Target model (test): acc: 0.8333, F1: 0.9000, AUROC: 0.6032
+Shadow model (train): acc: 0.9857, F1: 0.9867, AUROC: 1.0000
+Shadow model (test): acc: 0.6250, F1: 0.6400, AUROC: 0.6741
+Shadow (train) AUROC: 0.8741071428571429
+Target (test) AUROC: 0.6410714285714285
+Run #5
+Target model (train): acc: 0.9000, F1: 0.9358, AUROC: 0.9711
+Target model (test): acc: 0.8750, F1: 0.9333, AUROC: 0.6190
+Shadow model (train): acc: 1.0000, F1: 1.0000, AUROC: 1.0000
+Shadow model (test): acc: 0.6667, F1: 0.6923, AUROC: 0.7926
+Shadow (train) AUROC: 0.9273809523809523
+Target (test) AUROC: 0.5354166666666667
+Run #6
+Target model (train): acc: 0.9571, F1: 0.9714, AUROC: 0.9907
+Target model (test): acc: 0.8333, F1: 0.9048, AUROC: 0.5079
+Shadow model (train): acc: 0.9857, F1: 0.9867, AUROC: 0.9951
+Shadow model (test): acc: 0.7917, F1: 0.8276, AUROC: 0.7926
+Shadow (train) AUROC: 0.8812500000000001
+Target (test) AUROC: 0.6892857142857143
+Run #7
+Target model (train): acc: 0.5143, F1: 0.5000, AUROC: 0.9340
+Target model (test): acc: 0.2500, F1: 0.3077, AUROC: 0.1905
+Shadow model (train): acc: 0.9857, F1: 0.9867, AUROC: 1.0000
+Shadow model (test): acc: 0.6667, F1: 0.6923, AUROC: 0.8222
+Shadow (train) AUROC: 0.8327380952380953
+Target (test) AUROC: 0.6488095238095238
+glo_mia,none,None,mutag,0.25,0.3829787234042553,0.5017857142857143,0.8583333333333333,0.74286320346508,0.35555555555555557
+
+----------------ITERATION 1/15 (dataset=PROTEINS, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9424, F1: 0.9290, AUROC: 0.9856
+Target model (test): acc: 0.7050, F1: 0.6720, AUROC: 0.7594
+Shadow model (train): acc: 0.9209, F1: 0.8946, AUROC: 0.9827
+Shadow model (test): acc: 0.6786, F1: 0.5361, AUROC: 0.7325
+Shadow (train) AUROC: 0.7866478245974649
+Target (test) AUROC: 0.5983299691182307
+Run #2
+Target model (train): acc: 0.8921, F1: 0.8831, AUROC: 0.9672
+Target model (test): acc: 0.7122, F1: 0.7143, AUROC: 0.7552
+Shadow model (train): acc: 0.9448, F1: 0.9274, AUROC: 0.9839
+Shadow model (test): acc: 0.7214, F1: 0.6214, AUROC: 0.7216
+Shadow (train) AUROC: 0.7252911956149366
+Target (test) AUROC: 0.5788865310629194
+Run #3
+Target model (train): acc: 0.9640, F1: 0.9568, AUROC: 0.9872
+Target model (test): acc: 0.7482, F1: 0.7107, AUROC: 0.7847
+Shadow model (train): acc: 0.9592, F1: 0.9470, AUROC: 0.9927
+Shadow model (test): acc: 0.7214, F1: 0.6286, AUROC: 0.7353
+Shadow (train) AUROC: 0.7629410757108599
+Target (test) AUROC: 0.5950088849783484
+Run #4
+Target model (train): acc: 0.9520, F1: 0.9438, AUROC: 0.9887
+Target model (test): acc: 0.6978, F1: 0.6667, AUROC: 0.7030
+Shadow model (train): acc: 0.9712, F1: 0.9632, AUROC: 0.9846
+Shadow model (test): acc: 0.6857, F1: 0.5686, AUROC: 0.7165
+Shadow (train) AUROC: 0.799212058924289
+Target (test) AUROC: 0.6731276849024378
+Run #5
+Target model (train): acc: 0.9137, F1: 0.9027, AUROC: 0.9763
+Target model (test): acc: 0.6547, F1: 0.6522, AUROC: 0.7199
+Shadow model (train): acc: 0.9520, F1: 0.9394, AUROC: 0.9907
+Shadow model (test): acc: 0.7214, F1: 0.6139, AUROC: 0.7436
+Shadow (train) AUROC: 0.711630695443645
+Target (test) AUROC: 0.6273139761572037
+Run #6
+Target model (train): acc: 0.9520, F1: 0.9429, AUROC: 0.9790
+Target model (test): acc: 0.6978, F1: 0.6613, AUROC: 0.7213
+Shadow model (train): acc: 0.9329, F1: 0.9119, AUROC: 0.9842
+Shadow model (test): acc: 0.6786, F1: 0.5794, AUROC: 0.7148
+Shadow (train) AUROC: 0.6717968482356971
+Target (test) AUROC: 0.6039887514448873
+Run #7
+Target model (train): acc: 0.9329, F1: 0.9191, AUROC: 0.9846
+Target model (test): acc: 0.7122, F1: 0.6721, AUROC: 0.7236
+Shadow model (train): acc: 0.9353, F1: 0.9137, AUROC: 0.9857
+Shadow model (test): acc: 0.7071, F1: 0.5859, AUROC: 0.7384
+Shadow (train) AUROC: 0.719313120931826
+Target (test) AUROC: 0.6410382485378603
+glo_mia,none,None,proteins,0.25,0.6672661870503597,0.7057778237841381,0.8020897567660158,0.8649646938389036,0.7594278283485045
+
+----------------ITERATION 2/15 (dataset=PROTEINS, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9305, F1: 0.9239, AUROC: 0.9809
+Target model (test): acc: 0.7194, F1: 0.6422, AUROC: 0.7436
+Shadow model (train): acc: 0.9257, F1: 0.9058, AUROC: 0.9714
+Shadow model (test): acc: 0.7143, F1: 0.6491, AUROC: 0.7199
+Shadow (train) AUROC: 0.7010106200753683
+Target (test) AUROC: 0.5378689853872298
+Run #2
+Target model (train): acc: 0.9329, F1: 0.9251, AUROC: 0.9783
+Target model (test): acc: 0.7626, F1: 0.6452, AUROC: 0.7337
+Shadow model (train): acc: 0.8513, F1: 0.8176, AUROC: 0.9302
+Shadow model (test): acc: 0.6500, F1: 0.5812, AUROC: 0.6668
+Shadow (train) AUROC: 0.7136690647482014
+Target (test) AUROC: 0.597657126097683
+Run #3
+Target model (train): acc: 0.9353, F1: 0.9280, AUROC: 0.9777
+Target model (test): acc: 0.6978, F1: 0.6038, AUROC: 0.7382
+Shadow model (train): acc: 0.8249, F1: 0.7712, AUROC: 0.9134
+Shadow model (test): acc: 0.7357, F1: 0.6726, AUROC: 0.7965
+Shadow (train) AUROC: 0.595948955121617
+Target (test) AUROC: 0.5838897227541706
+Run #4
+Target model (train): acc: 0.9448, F1: 0.9387, AUROC: 0.9866
+Target model (test): acc: 0.7482, F1: 0.6602, AUROC: 0.7917
+Shadow model (train): acc: 0.8945, F1: 0.8706, AUROC: 0.9656
+Shadow model (test): acc: 0.6500, F1: 0.5882, AUROC: 0.7195
+Shadow (train) AUROC: 0.723449811579308
+Target (test) AUROC: 0.6223194106585235
+Run #5
+Target model (train): acc: 0.9400, F1: 0.9315, AUROC: 0.9834
+Target model (test): acc: 0.6978, F1: 0.6038, AUROC: 0.7521
+Shadow model (train): acc: 0.9161, F1: 0.8968, AUROC: 0.9729
+Shadow model (test): acc: 0.6500, F1: 0.5882, AUROC: 0.7308
+Shadow (train) AUROC: 0.7658359027064063
+Target (test) AUROC: 0.6882839052499008
+Run #6
+Target model (train): acc: 0.9496, F1: 0.9440, AUROC: 0.9832
+Target model (test): acc: 0.7338, F1: 0.6263, AUROC: 0.7485
+Shadow model (train): acc: 0.9209, F1: 0.8972, AUROC: 0.9779
+Shadow model (test): acc: 0.7286, F1: 0.6481, AUROC: 0.7475
+Shadow (train) AUROC: 0.7717026378896883
+Target (test) AUROC: 0.6662439832306817
+Run #7
+Target model (train): acc: 0.9496, F1: 0.9452, AUROC: 0.9908
+Target model (test): acc: 0.7338, F1: 0.6105, AUROC: 0.7378
+Shadow model (train): acc: 0.8753, F1: 0.8462, AUROC: 0.9409
+Shadow model (test): acc: 0.6786, F1: 0.6457, AUROC: 0.6897
+Shadow (train) AUROC: 0.6496145940390545
+Target (test) AUROC: 0.5755826993081793
+glo_mia,none,None,proteins,0.25,0.6960431654676259,0.7475631005986578,0.7701096265844468,0.8811302433892889,0.7802340702210663
+
+----------------ITERATION 3/15 (dataset=PROTEINS, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9041, F1: 0.8901, AUROC: 0.9710
+Target model (test): acc: 0.6906, F1: 0.6667, AUROC: 0.7232
+Shadow model (train): acc: 0.9209, F1: 0.9027, AUROC: 0.9720
+Shadow model (test): acc: 0.7000, F1: 0.6557, AUROC: 0.6999
+Shadow (train) AUROC: 0.7836587872559095
+Target (test) AUROC: 0.6614391939685661
+Run #2
+Target model (train): acc: 0.9065, F1: 0.8937, AUROC: 0.9732
+Target model (test): acc: 0.6547, F1: 0.6364, AUROC: 0.6905
+Shadow model (train): acc: 0.9257, F1: 0.9091, AUROC: 0.9735
+Shadow model (test): acc: 0.6571, F1: 0.5932, AUROC: 0.6771
+Shadow (train) AUROC: 0.7576909900650908
+Target (test) AUROC: 0.6383382502630988
+Run #3
+Target model (train): acc: 0.8729, F1: 0.8548, AUROC: 0.9458
+Target model (test): acc: 0.6835, F1: 0.6716, AUROC: 0.7039
+Shadow model (train): acc: 0.9329, F1: 0.9130, AUROC: 0.9791
+Shadow model (test): acc: 0.6857, F1: 0.6271, AUROC: 0.6639
+Shadow (train) AUROC: 0.7212401507365537
+Target (test) AUROC: 0.6260545520418197
+Run #4
+Target model (train): acc: 0.8993, F1: 0.8846, AUROC: 0.9698
+Target model (test): acc: 0.6763, F1: 0.6512, AUROC: 0.7318
+Shadow model (train): acc: 0.9424, F1: 0.9264, AUROC: 0.9872
+Shadow model (test): acc: 0.7000, F1: 0.6500, AUROC: 0.7200
+Shadow (train) AUROC: 0.8008907159986297
+Target (test) AUROC: 0.5979590428376723
+Run #5
+Target model (train): acc: 0.9185, F1: 0.9061, AUROC: 0.9752
+Target model (test): acc: 0.7338, F1: 0.7176, AUROC: 0.7835
+Shadow model (train): acc: 0.9376, F1: 0.9193, AUROC: 0.9842
+Shadow model (test): acc: 0.7357, F1: 0.6783, AUROC: 0.7646
+Shadow (train) AUROC: 0.6446899623158616
+Target (test) AUROC: 0.599054569294205
+Run #6
+Target model (train): acc: 0.9640, F1: 0.9565, AUROC: 0.9920
+Target model (test): acc: 0.6763, F1: 0.6218, AUROC: 0.7175
+Shadow model (train): acc: 0.9592, F1: 0.9489, AUROC: 0.9894
+Shadow model (test): acc: 0.6500, F1: 0.5812, AUROC: 0.6598
+Shadow (train) AUROC: 0.8373672490578966
+Target (test) AUROC: 0.665355485395856
+Run #7
+Target model (train): acc: 0.9353, F1: 0.9213, AUROC: 0.9846
+Target model (test): acc: 0.6835, F1: 0.6333, AUROC: 0.6708
+Shadow model (train): acc: 0.9233, F1: 0.8981, AUROC: 0.9708
+Shadow model (test): acc: 0.7143, F1: 0.6078, AUROC: 0.7345
+Shadow (train) AUROC: 0.7680712572798903
+Target (test) AUROC: 0.6418232320618327
+glo_mia,none,None,proteins,0.25,0.5179856115107914,0.6955299070096441,0.8582990750256939,0.8626970004018196,0.5718849840255591
+
+----------------ITERATION 4/15 (dataset=PROTEINS, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9400, F1: 0.9315, AUROC: 0.9804
+Target model (test): acc: 0.6835, F1: 0.6207, AUROC: 0.7356
+Shadow model (train): acc: 0.8969, F1: 0.8754, AUROC: 0.9561
+Shadow model (test): acc: 0.6929, F1: 0.5474, AUROC: 0.7681
+Shadow (train) AUROC: 0.7160671462829736
+Target (test) AUROC: 0.6069130307264978
+Run #2
+Target model (train): acc: 0.9281, F1: 0.9167, AUROC: 0.9785
+Target model (test): acc: 0.7050, F1: 0.6822, AUROC: 0.7689
+Shadow model (train): acc: 0.9329, F1: 0.9243, AUROC: 0.9788
+Shadow model (test): acc: 0.7929, F1: 0.7071, AUROC: 0.8163
+Shadow (train) AUROC: 0.6936793422404934
+Target (test) AUROC: 0.6077670237910391
+Run #3
+Target model (train): acc: 0.9185, F1: 0.9023, AUROC: 0.9750
+Target model (test): acc: 0.7050, F1: 0.5941, AUROC: 0.7139
+Shadow model (train): acc: 0.9089, F1: 0.8944, AUROC: 0.9715
+Shadow model (test): acc: 0.6643, F1: 0.6116, AUROC: 0.7383
+Shadow (train) AUROC: 0.696214457005824
+Target (test) AUROC: 0.6561427117298967
+Run #4
+Target model (train): acc: 0.9089, F1: 0.8984, AUROC: 0.9777
+Target model (test): acc: 0.6187, F1: 0.5891, AUROC: 0.6517
+Shadow model (train): acc: 0.9113, F1: 0.8882, AUROC: 0.9784
+Shadow model (test): acc: 0.7071, F1: 0.5684, AUROC: 0.7356
+Shadow (train) AUROC: 0.7145854744775608
+Target (test) AUROC: 0.6967030691993169
+Run #5
+Target model (train): acc: 0.9400, F1: 0.9288, AUROC: 0.9832
+Target model (test): acc: 0.7122, F1: 0.6226, AUROC: 0.7238
+Shadow model (train): acc: 0.9353, F1: 0.9231, AUROC: 0.9774
+Shadow model (test): acc: 0.7429, F1: 0.6538, AUROC: 0.7845
+Shadow (train) AUROC: 0.7246659815005139
+Target (test) AUROC: 0.583061608267343
+Run #6
+Target model (train): acc: 0.9640, F1: 0.9573, AUROC: 0.9935
+Target model (test): acc: 0.6691, F1: 0.6167, AUROC: 0.7214
+Shadow model (train): acc: 0.9113, F1: 0.8964, AUROC: 0.9671
+Shadow model (test): acc: 0.7500, F1: 0.6789, AUROC: 0.7854
+Shadow (train) AUROC: 0.7420435080507024
+Target (test) AUROC: 0.7434570329348033
+Run #7
+Target model (train): acc: 0.9257, F1: 0.9146, AUROC: 0.9795
+Target model (test): acc: 0.7122, F1: 0.6610, AUROC: 0.7159
+Shadow model (train): acc: 0.8537, F1: 0.8329, AUROC: 0.9322
+Shadow model (test): acc: 0.7214, F1: 0.6214, AUROC: 0.6986
+Shadow (train) AUROC: 0.6575453922576224
+Target (test) AUROC: 0.6024015320118006
+glo_mia,none,None,proteins,0.25,0.7643884892086331,0.6405465555613064,0.8147310722850292,0.8176418430538546,0.8523111612175873
+
+----------------ITERATION 5/15 (dataset=PROTEINS, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9017, F1: 0.8707, AUROC: 0.9703
+Target model (test): acc: 0.6619, F1: 0.5253, AUROC: 0.6825
+Shadow model (train): acc: 0.9233, F1: 0.9171, AUROC: 0.9687
+Shadow model (test): acc: 0.7500, F1: 0.7368, AUROC: 0.7891
+Shadow (train) AUROC: 0.6896539910928401
+Target (test) AUROC: 0.636035056846609
+Run #2
+Target model (train): acc: 0.9424, F1: 0.9226, AUROC: 0.9812
+Target model (test): acc: 0.6619, F1: 0.4946, AUROC: 0.6540
+Shadow model (train): acc: 0.8873, F1: 0.8669, AUROC: 0.9515
+Shadow model (test): acc: 0.7143, F1: 0.6825, AUROC: 0.7902
+Shadow (train) AUROC: 0.7241007194244604
+Target (test) AUROC: 0.6477580525507651
+Run #3
+Target model (train): acc: 0.9424, F1: 0.9241, AUROC: 0.9782
+Target model (test): acc: 0.6763, F1: 0.5161, AUROC: 0.6624
+Shadow model (train): acc: 0.9257, F1: 0.9132, AUROC: 0.9766
+Shadow model (test): acc: 0.7429, F1: 0.7097, AUROC: 0.7965
+Shadow (train) AUROC: 0.717677286742035
+Target (test) AUROC: 0.6930800683194451
+Run #4
+Target model (train): acc: 0.9472, F1: 0.9325, AUROC: 0.9850
+Target model (test): acc: 0.6835, F1: 0.5510, AUROC: 0.6846
+Shadow model (train): acc: 0.9688, F1: 0.9650, AUROC: 0.9946
+Shadow model (test): acc: 0.7071, F1: 0.6667, AUROC: 0.7618
+Shadow (train) AUROC: 0.7314919492977048
+Target (test) AUROC: 0.598157445266808
+Run #5
+Target model (train): acc: 0.9496, F1: 0.9369, AUROC: 0.9869
+Target model (test): acc: 0.6331, F1: 0.4848, AUROC: 0.6259
+Shadow model (train): acc: 0.8801, F1: 0.8641, AUROC: 0.9347
+Shadow model (test): acc: 0.7786, F1: 0.7395, AUROC: 0.8187
+Shadow (train) AUROC: 0.6603460089071601
+Target (test) AUROC: 0.6336714800821214
+Run #6
+Target model (train): acc: 0.9472, F1: 0.9321, AUROC: 0.9825
+Target model (test): acc: 0.6547, F1: 0.4894, AUROC: 0.6655
+Shadow model (train): acc: 0.8897, F1: 0.8802, AUROC: 0.9447
+Shadow model (test): acc: 0.7714, F1: 0.7576, AUROC: 0.7791
+Shadow (train) AUROC: 0.6466255566974992
+Target (test) AUROC: 0.7110398012525232
+Run #7
+Target model (train): acc: 0.9376, F1: 0.9193, AUROC: 0.9805
+Target model (test): acc: 0.6475, F1: 0.5051, AUROC: 0.6603
+Shadow model (train): acc: 0.9281, F1: 0.9171, AUROC: 0.9778
+Shadow model (test): acc: 0.7000, F1: 0.6557, AUROC: 0.7233
+Shadow (train) AUROC: 0.7148509763617676
+Target (test) AUROC: 0.6259682901161085
+glo_mia,none,None,proteins,0.25,0.7248201438848921,0.6993254317409382,0.7664953751284687,0.852135825832345,0.8085106382978723
+
+----------------ITERATION 6/15 (dataset=PROTEINS, defense=False, sigma=None)----------------
+Run #1
+Target model (train): acc: 0.9472, F1: 0.9402, AUROC: 0.9780
+Target model (test): acc: 0.6403, F1: 0.5690, AUROC: 0.6932
+Shadow model (train): acc: 0.9664, F1: 0.9576, AUROC: 0.9914
+Shadow model (test): acc: 0.7357, F1: 0.6606, AUROC: 0.7944
+Shadow (train) AUROC: 0.740870161014046
+Target (test) AUROC: 0.6944430067456826
+Run #2
+Target model (train): acc: 0.9472, F1: 0.9415, AUROC: 0.9891
+Target model (test): acc: 0.6691, F1: 0.5818, AUROC: 0.6687
+Shadow model (train): acc: 0.9544, F1: 0.9412, AUROC: 0.9890
+Shadow model (test): acc: 0.7214, F1: 0.6355, AUROC: 0.7265
+Shadow (train) AUROC: 0.7923518328194588
+Target (test) AUROC: 0.6739644255818367
+Run #3

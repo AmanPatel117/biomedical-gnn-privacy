@@ -1,12 +1,40 @@
 import time
 import torch
 import numpy as np
+from tqdm import tqdm
 from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, Subset
 from torch_geometric import nn as gnn
+from torch_geometric.data import InMemoryDataset, Data
 from torch_geometric.loader import DataLoader as GDataLoader
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+
+
+class CustomGraphDataset(InMemoryDataset):
+    def __init__(self, data_list):
+        super().__init__()
+        self.data, self.slices = self.collate(data_list)
+        self.y = torch.cat([g.y for g in data_list])
+        
+#         categories = [np.unique(self.y).astype(int).tolist()]
+#         self.y = torch.Tensor(OneHotEncoder(categories=categories, sparse_output=False).fit_transform(self.y.reshape(-1,1)))
+    
+    def __len__(self):
+        return len(self.slices['y']) - 1
+    
+    def __getitem__(self, idx):
+        return self.get(idx)
+    
+    @staticmethod
+    def from_datasets(dataset_list):
+        '''Combine list of torch_geometric Dataset'''
+        data_list = []
+        for dataset in dataset_list:
+            data_list.extend([g for g in dataset])
+        
+        return CustomGraphDataset(data_list)
 
 def train_model_single_graph(model, optimizer, data, loss_fn, epochs, save_freq=None, save_path=None, scheduler=None, device='cpu'):
     '''For training a GNN on a dataset comprised of only one graph. The graph might be split into parts representing training/testing/validation'''
@@ -55,7 +83,7 @@ def train_model_single_graph(model, optimizer, data, loss_fn, epochs, save_freq=
             
             
 
-def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, device='cpu'):
+def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, device='cpu', verbose=0):
     '''For training a GNN on a dataset comprising of multiple graphs'''
     model.train()
     loader = GDataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -65,18 +93,27 @@ def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_si
     multiclass = dataset[0].y.shape[1] > 2
     validate = (val_dataset is not None)
     
-    print(f'Learning rate: {optimizer.param_groups[0]["lr"]}')
-    print(f'Scheduler: {scheduler}' if scheduler else 'No learning rate scheduling!')
-    print(f'Training for {epochs} epochs, with batch size={batch_size}')
-    print(f'Using validation data ({len(val_dataset)} samples)' if validate else 'Not using validation data!')
-    print(f'Using device: {device}')
-    print(f'Saving model every {save_freq} epochs to {save_path}' if (save_freq and save_path) else 'WARNING: Will not save model!')
+    vprint = (
+        print if verbose == 2 else lambda x: None
+    )
 
-    for e in range(epochs):
+    progress_bar = (
+        tqdm if verbose == 1 else lambda x: x
+    )
+    
+    
+    vprint(f'Learning rate: {optimizer.param_groups[0]["lr"]}')
+    vprint(f'Scheduler: {scheduler}' if scheduler else 'No learning rate scheduling!')
+    vprint(f'Training for {epochs} epochs, with batch size={batch_size}')
+    vprint(f'Using validation data ({len(val_dataset)} samples)' if validate else 'Not using validation data!')
+    vprint(f'Using device: {device}')
+    vprint(f'Saving model every {save_freq} epochs to {save_path}' if (save_freq and save_path) else 'WARNING: Will not save model!')
+
+    for e in progress_bar(list(range(epochs))):
         losses = []
         all_pred, all_true = [], []
         t = time.time()
-        print(f'\n-----Epoch {e+1}/{epochs}-----')
+        vprint(f'\n-----Epoch {e+1}/{epochs}-----')
         for i, data in enumerate(loader):
             optimizer.zero_grad()
             data = data.to(device)
@@ -94,7 +131,7 @@ def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_si
                 pred_temp, true_temp = torch.cat(all_pred).detach().cpu(), torch.cat(all_true).detach().cpu()
                 train_acc = get_accuracy(pred_temp, true_temp)
                 train_auc = get_auroc_score(pred_temp, true_temp, multiclass=multiclass)
-                print(f'Batch {i+1:0{d}d}/{len(loader)} | loss: {np.mean(losses):.5f} ({elapsed:.3f}s) | train acc: {train_acc:.3f} | train AUC: {train_auc:.3f}')
+                vprint(f'Batch {i+1:0{d}d}/{len(loader)} | loss: {np.mean(losses):.5f} ({elapsed:.3f}s) | train acc: {train_acc:.3f} | train AUC: {train_auc:.3f}')
                 
                 model.train()
                 t = time.time()
@@ -102,20 +139,20 @@ def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_si
         
         if validate:
             val_loss, val_acc, val_f1, val_auc = test_model_multi_graph(model, loss_fn, val_dataset, device=device, multiclass=multiclass)
-            print(f'Validation: val loss: {val_loss:.3f} | val acc: {val_acc:.3f} | val F1: {val_f1:.3f} | val AUC: {val_auc:.3f}')
+            vprint(f'Validation: val loss: {val_loss:.3f} | val acc: {val_acc:.3f} | val F1: {val_f1:.3f} | val AUC: {val_auc:.3f}')
             model.train()
         else:
-            print()
+            vprint()
                 
         if scheduler is not None:
             scheduler.step(val_loss)
             
         if save_freq and save_path and ((e+1) % save_freq == 0 or e == epochs-1):
-            save_model(save_path, model, optimizer, epochs)
-            print(f'Saved to {save_path}')       
+            save_model(save_path, model, optimizer, epochs, dataset, val_dataset)
+            vprint(f'Saved to {save_path}')       
             
             
-def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, device='cpu'):
+def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, device='cpu', verbose=0):
     '''For training a generic PyTorch model'''
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     model.train()
@@ -123,17 +160,25 @@ def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_data
     multiclass = dataset[0][1].shape[0] > 2
     validate = (val_dataset is not None)
     
-    print(f'Learning rate: {optimizer.param_groups[0]["lr"]}')
-    print(f'Scheduler: {scheduler}' if scheduler else 'No learning rate scheduling!')
-    print(f'Training for {epochs} epochs, with batch size={batch_size}')
-    print(f'Using device: {device}')
-    print(f'Saving model every {save_freq} epochs to {save_path}' if save_freq else 'WARNING: Will not save model!')
+    vprint = (
+        print if verbose == 2 else lambda *args, **kwargs: None
+    )
 
-    for e in range(epochs):
+    progress_bar = (
+        tqdm if verbose == 1 else lambda x: x
+    )
+    
+    vprint(f'Learning rate: {optimizer.param_groups[0]["lr"]}')
+    vprint(f'Scheduler: {scheduler}' if scheduler else 'No learning rate scheduling!')
+    vprint(f'Training for {epochs} epochs, with batch size={batch_size}')
+    vprint(f'Using device: {device}')
+    vprint(f'Saving model every {save_freq} epochs to {save_path}' if save_freq else 'WARNING: Will not save model!')
+
+    for e in progress_bar(list(range(epochs))):
         losses = []
         all_pred, all_true = [], []
         t = time.time()
-        print(f'\n-----Epoch {e+1}/{epochs}-----')
+        vprint(f'\n-----Epoch {e+1}/{epochs}-----')
         for i, (x, labels) in enumerate(loader):
             optimizer.zero_grad()
             labels = labels.to(device)
@@ -154,7 +199,7 @@ def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_data
                 train_acc = get_accuracy(torch.cat(all_pred), torch.cat(all_true))
                 train_auc = get_auroc_score(pred_temp, true_temp, multiclass=multiclass)
 
-                print(f'Batch {i+1}/{len(loader)} | loss: {np.mean(losses)} ({elapsed:.3f}s) | train acc: {train_acc:.4f} | train auc: {train_auc:4f}', end='\n')
+                vprint(f'Batch {i+1}/{len(loader)} | loss: {np.mean(losses)} ({elapsed:.3f}s) | train acc: {train_acc:.4f} | train auc: {train_auc:4f}', end='\n')
                     
                 model.train()
                 t = time.time()
@@ -162,17 +207,17 @@ def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_data
                 
         if validate:
             val_loss, val_acc, val_f1, val_auc = test_model(model, loss_fn, val_dataset, device=device, multiclass=multiclass)
-            print(f'Validation: val loss: {val_loss:.3f} | val acc: {val_acc:.3f} | val F1: {val_f1:.3f} | val AUC: {val_auc:.3f}')
+            vprint(f'Validation: val loss: {val_loss:.3f} | val acc: {val_acc:.3f} | val F1: {val_f1:.3f} | val AUC: {val_auc:.3f}')
             model.train()
         else:
-            print()
+            vprint()
                 
         if scheduler is not None:
             scheduler.step()
             
         if save_freq and ((e+1) % save_freq == 0 or e == epochs-1):
-            save_model(save_path, model, optimizer, epochs)
-            print(f'Saved to {save_path}')  
+            save_model(save_path, model, optimizer, epochs, train_dataset=dataset, test_dataset=val_dataset)
+            vprint(f'Saved to {save_path}')  
 
 
 def test_model_single_graph(model, loss_fn, data, mask):
@@ -284,7 +329,7 @@ def get_auroc_score(logits, targets, multiclass=False):
     return auc
 
 
-def save_model(save_path, model, optimizer, epoch):
+def save_model(save_path, model, optimizer, epoch, train_dataset=None, test_dataset=None):
     '''
     Save a model to disk, with extra training parameters in order to resume training later.
     
@@ -293,11 +338,14 @@ def save_model(save_path, model, optimizer, epoch):
     optimizer: Optimizer to save.
     epoch: The last trained epoch (for info only; not used when resuming training)
     '''
-    torch.save({
-                'epoch': epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-            }, 
+    torch.save(
+        {
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'train_dataset': train_dataset,
+            'test_dataset': test_dataset
+        }, 
         save_path)
     
     
@@ -309,9 +357,9 @@ def load_model(model, save_path, strict=True):
     save_path: Path as string to the model (.pth)
     strict: Whether to strictly load weights (kwarg for load_state_dict)
     '''
-    checkpoint = torch.load(save_path, weights_only=True)
+    checkpoint = torch.load(save_path, weights_only=False)
     model.load_state_dict(checkpoint['model_state_dict'], strict=strict)
-    return model
+    return model, checkpoint['train_dataset'], checkpoint['test_dataset']
 
 
 def predict_multi_graph(model, dataset, idxs=None, device='cpu', logits=False, return_type='np'):
@@ -368,15 +416,19 @@ def predict(model, dataset, idxs=None, device='cpu', logits=False, return_type='
 
 
 class GenericAttackModel(nn.Module):
-    def __init__(self, num_feat):
+    def __init__(self, num_feat, dropout=0.):
         super().__init__()
         
         self.layers = nn.Sequential(
-            nn.Linear(num_feat, 64),
+            nn.Linear(num_feat, 128),
+            nn.BatchNorm1d(128),
             nn.ReLU(),
-            nn.Linear(64, 32),
+            nn.Dropout(dropout),
+            nn.Linear(128, 64),
+            nn.BatchNorm1d(64),
             nn.ReLU(),
-            nn.Linear(32, 2)
+            nn.Dropout(dropout),
+            nn.Linear(64, 2)
         )
         
         
@@ -406,6 +458,44 @@ class GCNProteinsModel(nn.Module):
         out = gnn.global_mean_pool(out, batch)
 #         out = self.linear(out)
         return out
+    
+    
+class CustomGATModel(nn.Module):
+    def __init__(self, num_feat, num_classes, heads=8, layers=4, hidden_dim=18, out_dim=144, batch_norm=True, dropout=0.):
+        super().__init__()
+        
+        self.heads = heads
+        self.n_layers = layers
+        self.hidden_dim = hidden_dim
+        self.out_dim = out_dim
+        self.batch_norm = batch_norm
+        self.embedding = nn.Linear(num_feat, hidden_dim*self.heads)
+        
+        self.gat_layers = nn.ModuleList([
+            gnn.conv.GATConv(self.hidden_dim*self.heads, hidden_dim, heads=self.heads, dropout=dropout)
+            for _ in range(self.n_layers-1) 
+        ])
+        
+        self.bns = nn.ModuleList([
+            nn.BatchNorm1d(hidden_dim*self.heads)
+            for _ in range(self.n_layers-1)
+        ])
+        
+        self.gat_layers.append(gnn.conv.GATConv(self.hidden_dim*self.heads, self.out_dim, heads=1, dropout=dropout))
+        self.bns.append(nn.BatchNorm1d(self.out_dim))
+        self.linear = gnn.models.MLP([self.out_dim, self.out_dim//2, self.out_dim//4, num_classes], norm=('batch_norm' if batch_norm else None), dropout=dropout)
+    
+    def forward(self, x, edge_index, batch):
+        out = self.embedding(x)
+        for i, gat in enumerate(self.gat_layers):
+            out = gat(out, edge_index).relu()
+            if self.batch_norm:
+                out = self.bns[i](out)
+        
+        out = gnn.pool.global_mean_pool(out, batch)
+#         print(out.shape)
+#         print(self.linear.in_channels)
+        return self.linear(out)
     
 
 class GATProteinsModel(nn.Module):
@@ -471,3 +561,14 @@ class GATMolhivModel(nn.Module):
 #         out = self.linear(out)
         return out
 
+
+class LogitsDefenseModel(nn.Module):
+    '''Defense by adding Gaussian noise to the logits'''
+    def __init__(self, model, sigma=0.5):
+        super().__init__()
+        self.model = model
+        self.sigma = sigma
+        
+    def forward(self, x, batch_index, batch):
+        res = self.model(x, batch_index, batch)
+        return res + (torch.randn(*res.shape) * self.sigma).to(next(self.model.parameters()).device)

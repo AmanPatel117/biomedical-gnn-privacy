@@ -10,14 +10,6 @@ from sklearn.model_selection import train_test_split
 from ml_util import get_accuracy, predict_multi_graph
 
 
-def _get_onehot_transform(n_categories):
-    return lambda g: onehot_transform(g, categories=list(range(n_categories)))
-
-def _ogb_molhiv_transform(g):
-    g.x = g.x.to(torch.float32)
-    return onehot_transform(g, categories=[0,1])
-
-
 def onehot_transform(data, categories=None):
     '''
     Transform y labels into one-hot vectors. Returns the same data object (in-place) data with its y label transformed.
@@ -115,37 +107,68 @@ def create_perturbed_graphs(x, num=1000, r_min=0.1, r_max=0.5, scaler=0.4, devic
     scaler: Scale r_min and r_max. Noise is sample from [scaler*r_min, scaler*r_max]. Default: 0.4
     device: Device to compute on. Default: 'cpu'
     '''
-    all_x_perturb = torch.empty((num,) + tuple(x.shape), dtype=torch.float32, device=device)
-    nonzero =  (x != 0) #torch.ones_like(x, dtype=bool, device=device)
+#     all_x_perturb = torch.empty((num,) + tuple(x.shape), dtype=torch.float32, device=device)
+    nonzero =  (x != 0).unsqueeze(0).expand(num, -1, -1)
     zero_tensor = torch.zeros(nonzero.shape, dtype=torch.float32, device=device)
 
-    for i in range(num):
-        randmat = torch.FloatTensor(nonzero.shape).to(device).uniform_(scaler*r_min, scaler*r_max)
-        perturbations = torch.where(nonzero, randmat, zero_tensor)
-        operator = torch.where(nonzero, torch.randint(0, 2, size=nonzero.shape, device=device)*2 - 1, zero_tensor)
-        all_x_perturb[i] = x + (perturbations * operator)
+    randmat = torch.FloatTensor(nonzero.shape).to(device).uniform_(scaler*r_min, scaler*r_max)
+    perturbations = torch.where(nonzero, randmat, zero_tensor)
+    operator = torch.where(nonzero, torch.randint(0, 2, size=nonzero.shape, device=device)*2 - 1, zero_tensor)
+#         all_x_perturb[i] = x + (perturbations * operator)
     
-    return all_x_perturb
+    return x + (perturbations * operator)
+#     all_x_perturb = torch.empty((num,) + tuple(x.shape), dtype=torch.float32, device=device)
+#     nonzero =  (x != 0) #torch.ones_like(x, dtype=bool, device=device)
+#     zero_tensor = torch.zeros(nonzero.shape, dtype=torch.float32, device=device)
+
+#     for i in range(num):
+#         randmat = torch.FloatTensor(nonzero.shape).to(device).uniform_(scaler*r_min, scaler*r_max)
+#         perturbations = torch.where(nonzero, randmat, zero_tensor)
+#         operator = torch.where(nonzero, torch.randint(0, 2, size=nonzero.shape, device=device)*2 - 1, zero_tensor)
+#         all_x_perturb[i] = x + (perturbations * operator)
+    
+#     return all_x_perturb
 
 
-def calculate_robustness_scores(model, dataset, n_perturb_per_graph=1000, scaler=0.4, device='cpu'):
+def calculate_robustness_scores(model, dataset, n_perturb_per_graph=1000, scaler=0.4, device='cpu', metric='robustness'):
     '''
     GLO-MIA: Calculate the robustness scores of every graph in the dataset. The robustness score of a graph is
     defined as the fraction of its perturbed graphs that are still correctly labeled by the model.
     '''
+    if metric not in ['robustness', 'cross_entropy']:
+        raise ValueError()
+    
     model.eval()
-    chunksize = 250
+    chunksize = 512
     loader = GDataLoader(dataset, batch_size=chunksize, shuffle=False)
     
     scores = []
     with torch.no_grad():
         for i, gbatch in enumerate(loader):
             gbatch = gbatch.to(device)
-            x_p = create_perturbed_graphs(gbatch.x, num=n_perturb_per_graph, scaler=scaler, device=device).to(device)
-            pred = torch.stack([model(x_pi, gbatch.edge_index, gbatch.batch).squeeze() for x_pi in x_p])
-            scores.append(np.atleast_1d((pred.cpu().numpy().argmax(axis=-1) == gbatch.y.cpu().numpy().argmax(axis=-1)).mean(axis=0)))
+            y_t = model(gbatch.x, gbatch.edge_index, gbatch.batch)
             
-    return np.concatenate(scores)
+            x_p = create_perturbed_graphs(gbatch.x, num=n_perturb_per_graph, scaler=scaler, device=device).to(device)
+            # pred has shape (number of perturbed graphs, batch size, 2)
+#             pred = model(x_p.view(n_perturb_per_graph*gbatch.y.shape[0], -1))
+            pred = torch.stack([model(x_pi, gbatch.edge_index, gbatch.batch).squeeze() for x_pi in x_p])
+            
+#             print(y_t.shape)
+#             print(y_t.repeat(n_perturb_per_graph, 1).shape)
+#             print(pred.flatten(end_dim=1).shape)
+            
+            if metric == 'robustness':
+#                 y_t = F.one_hot(y_t.argmax(dim=1), num_classes=y_t.shape[1]).to(torch.float32)
+                score = torch.atleast_1d(pred.argmax(dim=2) == y_t.argmax(dim=1)).to(torch.float32).mean(dim=0)
+                scores.append(torch.where((y_t.argmax(dim=1) == gbatch.y.argmax(dim=1)), score, torch.zeros_like(score)))
+            elif metric == 'cross_entropy':
+                y_t = F.softmax(y_t, dim=1)
+                score = F.cross_entropy(pred.view(-1,2), y_t.unsqueeze(0).expand(n_perturb_per_graph,-1,-1).flatten(end_dim=1), reduction='none').view(n_perturb_per_graph, -1).mean(dim=0)
+                # CE between original y_t predictions, and the true labels y
+                true_ce = F.cross_entropy(y_t, gbatch.y, reduction='none')
+                scores.append(torch.where(y_t.argmax(dim=1) == gbatch.y.argmax(dim=1), score, true_ce))
+            
+    return torch.cat(scores).cpu().numpy()
 
 
 def create_attack_dataset_OLD(model, data):
