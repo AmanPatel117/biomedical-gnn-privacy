@@ -9,7 +9,7 @@ from torch_geometric import nn as gnn
 from torch_geometric.data import InMemoryDataset, Data
 from torch_geometric.loader import DataLoader as GDataLoader
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+from sklearn.metrics import auc as AUC, accuracy_score, f1_score, roc_auc_score, precision_recall_curve
 
 
 class CustomGraphDataset(InMemoryDataset):
@@ -21,11 +21,11 @@ class CustomGraphDataset(InMemoryDataset):
 #         categories = [np.unique(self.y).astype(int).tolist()]
 #         self.y = torch.Tensor(OneHotEncoder(categories=categories, sparse_output=False).fit_transform(self.y.reshape(-1,1)))
     
-    def __len__(self):
-        return len(self.slices['y']) - 1
+#     def __len__(self):
+#         return len(self.slices['y']) - 1
     
-    def __getitem__(self, idx):
-        return self.get(idx)
+#     def __getitem__(self, idx):
+#         return self.get(idx)
     
     @staticmethod
     def from_datasets(dataset_list):
@@ -83,10 +83,28 @@ def train_model_single_graph(model, optimizer, data, loss_fn, epochs, save_freq=
             
             
 
-def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, device='cpu', verbose=0):
-    '''For training a GNN on a dataset comprising of multiple graphs'''
+def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, 
+                            device='cpu', resample=None, verbose=0,):
+    '''
+    For training a GNN on a dataset comprising of multiple graphs.
+    
+    resample: If True, undersample the majority class and oversample the minority class.
+    '''
     model.train()
-    loader = GDataLoader(dataset, batch_size=batch_size, shuffle=True)
+    
+    if resample is not None:
+        if resample == 'over':
+            sampled_dataset = oversample_multi_graph(dataset)
+        elif resample == 'under':
+            sampled_dataset = undersample_multi_graph(dataset)
+        else:
+            raise ValueError()
+    else:
+        sampled_dataset = dataset
+        
+    loader = GDataLoader(sampled_dataset, batch_size=batch_size, shuffle=True)
+        
+    
     num_batches = len(loader)
     d = len(str(num_batches))
     
@@ -94,7 +112,7 @@ def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_si
     validate = (val_dataset is not None)
     
     vprint = (
-        print if verbose == 2 else lambda x: None
+        print if verbose == 2 else lambda *args, **kwargs: None
     )
 
     progress_bar = (
@@ -116,26 +134,29 @@ def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_si
         vprint(f'\n-----Epoch {e+1}/{epochs}-----')
         for i, data in enumerate(loader):
             optimizer.zero_grad()
-            data = data.to(device)
+#             if not keep_data_on_device:
+#                 data = data.to(device) 
             pred = model(data.x, data.edge_index, data.batch)
             loss = loss_fn(pred, data.y)
             loss.backward()
             optimizer.step()
             
             losses.append(loss.item())
-            all_pred.append(pred.detach().cpu())
-            all_true.append(data.y.cpu())
+            all_pred.append(pred.detach())
+            all_true.append(data.y)
 
-            if len(losses) == 10 or i == len(loader)-1:
+            if (i+1) % 100 == 0 or i == len(loader)-1:
                 elapsed = time.time() - t
-                pred_temp, true_temp = torch.cat(all_pred).detach().cpu(), torch.cat(all_true).detach().cpu()
+                pred_temp, true_temp = torch.cat(all_pred).cpu(), torch.cat(all_true).cpu()
+                train_f1 = get_f1_score(pred_temp, true_temp, multiclass=multiclass)
                 train_acc = get_accuracy(pred_temp, true_temp)
                 train_auc = get_auroc_score(pred_temp, true_temp, multiclass=multiclass)
-                vprint(f'Batch {i+1:0{d}d}/{len(loader)} | loss: {np.mean(losses):.5f} ({elapsed:.3f}s) | train acc: {train_acc:.3f} | train AUC: {train_auc:.3f}')
+                vprint(f'Batch {i+1:0{d}d}/{len(loader)} | loss: {np.mean(losses):.5f} ({elapsed:.3f}s) | train acc: {train_acc:.3f} | train F1: {train_f1:.3f} | train AUC: {train_auc:.3f}')
                 
                 model.train()
                 t = time.time()
-                losses = []
+                all_pred = []
+                all_true = []
         
         if validate:
             val_loss, val_acc, val_f1, val_auc = test_model_multi_graph(model, loss_fn, val_dataset, device=device, multiclass=multiclass)
@@ -145,11 +166,19 @@ def train_model_multi_graph(model, optimizer, dataset, loss_fn, epochs, batch_si
             vprint()
                 
         if scheduler is not None:
-            scheduler.step(val_loss)
+            scheduler.step(val_loss if validate else np.mean(losses))
             
         if save_freq and save_path and ((e+1) % save_freq == 0 or e == epochs-1):
             save_model(save_path, model, optimizer, epochs, dataset, val_dataset)
             vprint(f'Saved to {save_path}')       
+            
+        if resample is not None:
+            if resample == 'over':
+                sampled_dataset = oversample_multi_graph(dataset)
+                loader = GDataLoader(sampled_dataset, batch_size=batch_size, shuffle=True)
+            elif resample == 'under':
+                sampled_dataset = undersample_multi_graph(dataset)
+                loader = GDataLoader(sampled_dataset, batch_size=batch_size, shuffle=True)
             
             
 def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_dataset=None, save_freq=None, save_path=None, scheduler=None, device='cpu', verbose=0):
@@ -196,7 +225,8 @@ def train_model(model, optimizer, dataset, loss_fn, epochs, batch_size, val_data
                 elapsed = time.time() - t
                 pred_temp = torch.cat(all_pred)
                 true_temp = torch.cat(all_true)
-                train_acc = get_accuracy(torch.cat(all_pred), torch.cat(all_true))
+                
+                train_acc = get_accuracy(pred_temp, true_temp)
                 train_auc = get_auroc_score(pred_temp, true_temp, multiclass=multiclass)
 
                 vprint(f'Batch {i+1}/{len(loader)} | loss: {np.mean(losses)} ({elapsed:.3f}s) | train acc: {train_acc:.4f} | train auc: {train_auc:4f}', end='\n')
@@ -229,44 +259,52 @@ def test_model_single_graph(model, loss_fn, data, mask):
         return loss
 
 
-def test_model_multi_graph(model, loss_fn, dataset, device='cpu', multiclass=False):
+def test_model_multi_graph(model, loss_fn, dataset, device='cpu', multiclass=False, auprc=False, keep_data_on_device=True):
     '''
     Test the loss and accuracy on a validation dataset.
     multicless: Whether there are more than 2 categories. If True, F1 and AUROC are calculated using weighted avg
                            across all categories.
     '''
     model.eval()
+#     if keep_data_on_device:
+#         dataset = dataset.to(device)
     batch_size = 250
     loader = GDataLoader(dataset, batch_size=batch_size, shuffle=False)
     
     all_logits, all_targets = [], []
     with torch.no_grad():
         for data in loader:
-            data = data.to(device)
+#             if not keep_data_on_device:
+#                 data = data.to(device)
             logits = model(data.x, data.edge_index, data.batch)
             targets = data.y
             
             all_logits.append(logits)
             all_targets.append(targets)
         
-        all_logits = torch.cat(all_logits)
-        all_targets = torch.cat(all_targets)
+        all_logits = torch.cat(all_logits).cpu()
+        all_targets = torch.cat(all_targets).cpu()
             
-        loss = loss_fn(all_logits, all_targets)
-        acc = get_accuracy(all_logits.cpu(), all_targets.cpu())
+        loss = loss_fn.cpu()(all_logits, all_targets)
+        loss_fn.to(device)
+        acc = get_accuracy(all_logits, all_targets)
 
-        f1 = get_f1_score(all_logits.cpu(), all_targets.cpu(), multiclass=multiclass)
-        auc = get_auroc_score(all_logits.cpu(), all_targets.cpu(), multiclass=multiclass)
+        f1 = get_f1_score(all_logits, all_targets, multiclass=multiclass)
+        auc = get_auroc_score(all_logits, all_targets, multiclass=multiclass)
+        
+        if auprc:
+            auprc = get_auprc_score(all_logits, all_targets)
+            return loss, acc, f1, auc, auprc
 
         return loss, acc, f1, auc
     
     
-def test_model(model, loss_fn, dataset, device='cpu', multiclass=False):
+def test_model(model, loss_fn, dataset, device='cpu', multiclass=False, auprc=False):
     '''
     Test a generic (non-GNN) pytorch model
     '''
     model.eval()
-    batch_size = 250
+    batch_size = 300
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     
     all_logits, all_targets = [], []
@@ -279,14 +317,20 @@ def test_model(model, loss_fn, dataset, device='cpu', multiclass=False):
             all_logits.append(logits)
             all_targets.append(targets)
         
-        all_logits = torch.cat(all_logits)
-        all_targets = torch.cat(all_targets)
+        all_logits = torch.cat(all_logits).cpu()
+        all_targets = torch.cat(all_targets).cpu()
             
-        loss = loss_fn(all_logits, all_targets)
-        acc = get_accuracy(all_logits.cpu(), all_targets.cpu())
+        loss = loss_fn.cpu()(all_logits, all_targets)
+        acc = get_accuracy(all_logits, all_targets)
 
-        f1 = get_f1_score(all_logits.cpu(), all_targets.cpu(), multiclass=multiclass)
-        auc = get_auroc_score(all_logits.cpu(), all_targets.cpu(), multiclass=multiclass)
+        f1 = get_f1_score(all_logits, all_targets, multiclass=multiclass)
+        auc = get_auroc_score(all_logits, all_targets, multiclass=multiclass)
+        
+        loss_fn.to(device)
+        
+        if auprc:
+            auprc = get_auprc_score(all_logits, all_targets)
+            return loss, acc, f1, auc, auprc
 
         return loss, acc, f1, auc
         
@@ -327,6 +371,17 @@ def get_auroc_score(logits, targets, multiclass=False):
         target_labels = torch.argmax(targets, dim=1)
     auc = roc_auc_score(target_labels, pred_labels, average=('weighted' if multiclass else 'macro'), multi_class=('ovr' if multiclass else 'raise'))
     return auc
+
+
+def get_auprc_score(logits, targets):
+    '''
+    Currently implemented for binary classification only
+    '''
+    pred_scores = F.softmax(logits, dim=1)[:,1]
+    target_labels = torch.argmax(targets, dim=1)
+    precision, recall, thresholds = precision_recall_curve(target_labels, pred_scores)
+    auprc = AUC(recall, precision)
+    return auprc
 
 
 def save_model(save_path, model, optimizer, epoch, train_dataset=None, test_dataset=None):
@@ -381,6 +436,7 @@ def predict_multi_graph(model, dataset, idxs=None, device='cpu', logits=False, r
         for gbatch in loader:
             gbatch = gbatch.to(device)
             pred = model(gbatch.x, gbatch.edge_index, gbatch.batch).squeeze().cpu().numpy()
+            pred = np.atleast_2d(pred)
             
             all_pred.append(pred if logits else pred.argmax(axis=1))
 
@@ -409,7 +465,31 @@ def predict(model, dataset, idxs=None, device='cpu', logits=False, return_type='
             all_pred.append(pred if logits else pred.argmax(axis=1))
             
         return np.concatenate(all_pred) if return_type == 'np' else torch.cat(all_pred)
+
     
+def oversample_multi_graph(dataset):
+    '''Oversample the minority class so that the dataset is balanced'''
+    class_counts = dataset.y.sum(dim=0)
+    minority = class_counts.argmin().item()
+    num_sample = int(abs(class_counts[0] - class_counts[1]))
+    minority_ind = torch.where(dataset.y.argmax(dim=1) == minority)[0]
+
+    resampled_ind = np.random.choice(minority_ind.cpu(), size=num_sample)
+    return CustomGraphDataset.from_datasets([dataset, dataset[resampled_ind]])
+
+
+def undersample_multi_graph(dataset):
+    '''Undersample the majority class so that the dataset is balanced'''
+    class_counts = dataset.y.sum(dim=0)
+    majority = class_counts.argmax().item()
+    num_sample = class_counts.argmin().item()
+    majority_ind = torch.where(dataset.y.argmax(dim=1) == majority)[0]
+
+    resampled_ind = np.random.choice(majority_ind.cpu(), size=num_sample)
+    return CustomGraphDataset.from_datasets([dataset[dataset.y.argmax(dim=1) != majority], dataset[resampled_ind]])
+
+
+
 ###############################################################
 ##################### GNN models below ########################
 ###############################################################
@@ -461,7 +541,7 @@ class GCNProteinsModel(nn.Module):
     
     
 class CustomGATModel(nn.Module):
-    def __init__(self, num_feat, num_classes, heads=8, layers=4, hidden_dim=18, out_dim=144, batch_norm=True, dropout=0.):
+    def __init__(self, num_feat, num_classes, heads=8, layers=4, hidden_dim=18, out_dim=144, batch_norm=True, dropout=0., readout=True):
         super().__init__()
         
         self.heads = heads
@@ -470,6 +550,7 @@ class CustomGATModel(nn.Module):
         self.out_dim = out_dim
         self.batch_norm = batch_norm
         self.embedding = nn.Linear(num_feat, hidden_dim*self.heads)
+        self.readout = readout
         
         self.gat_layers = nn.ModuleList([
             gnn.conv.GATConv(self.hidden_dim*self.heads, hidden_dim, heads=self.heads, dropout=dropout)
@@ -485,17 +566,30 @@ class CustomGATModel(nn.Module):
         self.bns.append(nn.BatchNorm1d(self.out_dim))
         self.linear = gnn.models.MLP([self.out_dim, self.out_dim//2, self.out_dim//4, num_classes], norm=('batch_norm' if batch_norm else None), dropout=dropout)
     
+    
     def forward(self, x, edge_index, batch):
         out = self.embedding(x)
         for i, gat in enumerate(self.gat_layers):
             out = gat(out, edge_index).relu()
             if self.batch_norm:
                 out = self.bns[i](out)
-        
-        out = gnn.pool.global_mean_pool(out, batch)
-#         print(out.shape)
-#         print(self.linear.in_channels)
+        if self.readout:
+            out = gnn.pool.global_mean_pool(out, batch)
+    
         return self.linear(out)
+    
+    
+    def predict(self, g, return_type='np'):
+        self.eval()
+        with torch.no_grad():
+            res = self.forward(g.x, g.edge_index, g.batch)
+            
+        if return_type == 'np':
+            return res.cpu().numpy()
+        elif return_type == 'pt':
+            return res.cpu()
+        
+        raise ValueError()
     
 
 class GATProteinsModel(nn.Module):
